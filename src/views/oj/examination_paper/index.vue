@@ -13,16 +13,32 @@
       <!--如果想在工具栏加入更多按钮，可以使用插槽方式， slot = 'left' or 'right'-->
       <crudOperation :permission="permission" />
       <!--表单组件-->
-      <el-dialog :close-on-click-modal="false" :before-close="crud.cancelCU" :visible.sync="crud.status.cu > 0" :title="crud.status.title" width="500px">
-        <el-form ref="form" :model="form" :rules="rules" size="small" label-width="80px">
-          <el-form-item label="名称" prop="name">
-            <el-input v-model="form.name" style="width: 370px;" />
-          </el-form-item>
-          <el-form-item label="描述">
-            <el-input v-model="form.description" :rows="3" type="textarea" style="width: 370px;" />
-          </el-form-item>
-        </el-form>
+      <el-dialog :close-on-click-modal="false" :before-close="crud.cancelCU" :visible.sync="crud.status.cu > 0" :title="crud.status.title" width="80%">
+        <el-steps :active="title_active" align-center>
+          <el-step title="1" description="试卷基本信息" />
+          <el-step title="2" description="试卷组成" />
+        </el-steps>
+        <div v-if="title_active===1">
+          <el-form ref="form" :model="form" :rules="rules" size="small" label-width="80px">
+            <el-form-item label="名称" prop="name">
+              <el-input v-model="form.name" style="width: 370px;" />
+            </el-form-item>
+            <el-form-item label="描述">
+              <mavon-editor ref="md" :value="form.description" @save="savePaperInfo" />
+            </el-form-item>
+          </el-form>
+        </div>
+        <div v-else>
+          <el-transfer
+            :value="problemIds"
+            filterable
+            filter-placeholder="题目名"
+            :data="problems"
+          />
+        </div>
         <div slot="footer" class="dialog-footer">
+          <el-button type="text" @click="title_active=2">下一步</el-button>
+          <el-button type="text" @click="title_active=1">上一步</el-button>
           <el-button type="text" @click="crud.cancelCU">取消</el-button>
           <el-button :loading="crud.status.cu === 2" type="primary" @click="crud.submitCU">确认</el-button>
         </div>
@@ -57,17 +73,19 @@ import rrOperation from '@crud/RR.operation.vue'
 import crudOperation from '@crud/CRUD.operation.vue'
 import udOperation from '@crud/UD.operation.vue'
 import pagination from '@crud/Pagination.vue'
+import { mavonEditor } from 'mavon-editor'
 
-const defaultForm = { id: null, name: null, description: null, createTime: null, updateTime: null }
+const defaultForm = { id: null, name: null, description: null, description_html: null, createTime: null, updateTime: null }
 export default {
   name: 'ExaminationPaper',
-  components: { pagination, crudOperation, rrOperation, udOperation },
+  components: { mavonEditor, pagination, crudOperation, rrOperation, udOperation },
   mixins: [presenter(), header(), form(defaultForm), crud()],
   cruds() {
     return CRUD({ title: '试卷', url: 'api/examinationPaper', idField: 'id', sort: 'id,desc', crudMethod: { ...crudExaminationPaper }})
   },
   data() {
     return {
+      title_active: 1,
       permission: {
         add: ['admin', 'examinationPaper:add'],
         edit: ['admin', 'examinationPaper:edit'],
@@ -84,10 +102,21 @@ export default {
       ]
     }
   },
+  created() {
+
+  },
   methods: {
     // 钩子：在获取表格数据之前执行，false 则代表不获取数据
     [CRUD.HOOK.beforeRefresh]() {
       return true
+    },
+    savePaperInfo(markdown, render) {
+      this.form.description = markdown
+      this.form.description_html = render
+    },
+    getProblems() {
+      // crudProblem.
+
     }
   }
 }

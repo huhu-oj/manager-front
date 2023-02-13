@@ -22,7 +22,7 @@
             <el-input v-model="form.description" :rows="3" type="textarea" style="width: 370px;" />
           </el-form-item>
           <el-form-item label="所属题目" prop="problemId">
-            未设置字典，请手动设置 Select
+            <el-input v-model="form.problemId" style="width: 370px;" />
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">

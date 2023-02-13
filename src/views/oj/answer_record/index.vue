@@ -20,10 +20,10 @@
       <el-dialog :close-on-click-modal="false" :before-close="crud.cancelCU" :visible.sync="crud.status.cu > 0" :title="crud.status.title" width="500px">
         <el-form ref="form" :model="form" :rules="rules" size="small" label-width="80px">
           <el-form-item label="所属题目" prop="problemId">
-            未设置字典，请手动设置 Select
+            <el-input v-model="form.problemId" style="width: 370px;" />
           </el-form-item>
           <el-form-item label="所属用户" prop="userId">
-            未设置字典，请手动设置 Select
+            <el-input v-model="form.userId" style="width: 370px;" />
           </el-form-item>
           <el-form-item label="代码" prop="code">
             <el-input v-model="form.code" :rows="3" type="textarea" style="width: 370px;" />
@@ -32,7 +32,7 @@
             <el-input v-model="form.executeTime" style="width: 370px;" />
           </el-form-item>
           <el-form-item label="所属语言" prop="languageId">
-            未设置字典，请手动设置 Select
+            <el-input v-model="form.languageId" style="width: 370px;" />
           </el-form-item>
           <el-form-item label="日志" prop="log">
             <el-input v-model="form.log" :rows="3" type="textarea" style="width: 370px;" />
@@ -47,7 +47,7 @@
             <el-input v-model="form.notPassNum" style="width: 370px;" />
           </el-form-item>
           <el-form-item label="执行结果" prop="executeResultId">
-            未设置字典，请手动设置 Select
+            <el-input v-model="form.executeResultId" style="width: 370px;" />
           </el-form-item>
           <el-form-item label="备注" prop="note">
             <el-input v-model="form.note" :rows="3" type="textarea" style="width: 370px;" />
@@ -93,10 +93,10 @@
 <script>
 import crudAnswerRecord from '@/api/answerRecord'
 import CRUD, { presenter, header, form, crud } from '@crud/crud'
-import rrOperation from '@crud/RR.operation.vue'
-import crudOperation from '@crud/CRUD.operation.vue'
-import udOperation from '@crud/UD.operation.vue'
-import pagination from '@crud/Pagination.vue'
+import rrOperation from '@crud/RR.operation'
+import crudOperation from '@crud/CRUD.operation'
+import udOperation from '@crud/UD.operation'
+import pagination from '@crud/Pagination'
 
 const defaultForm = { id: null, problemId: null, userId: null, code: null, executeTime: null, languageId: null, log: null, error: null, passNum: null, notPassNum: null, executeResultId: null, note: null, createTime: null, updateTime: null }
 export default {

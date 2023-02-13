@@ -4,8 +4,10 @@
     <div class="head-container">
       <div v-if="crud.props.searchToggle">
         <!-- 搜索 -->
-        <label class="el-form-item-label">所属题目</label>
-        <el-input v-model="query.problemId" clearable placeholder="所属题目" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
+        <label class="el-form-item-label">名称</label>
+        <el-input v-model="query.name" clearable placeholder="名称" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
+        <label class="el-form-item-label">班级</label>
+        <el-input v-model="query.classId" clearable placeholder="班级" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
         <rrOperation :crud="crud" />
       </div>
       <!--如果想在工具栏加入更多按钮，可以使用插槽方式， slot = 'left' or 'right'-->
@@ -13,11 +15,14 @@
       <!--表单组件-->
       <el-dialog :close-on-click-modal="false" :before-close="crud.cancelCU" :visible.sync="crud.status.cu > 0" :title="crud.status.title" width="500px">
         <el-form ref="form" :model="form" :rules="rules" size="small" label-width="80px">
-          <el-form-item label="描述" prop="description">
-            <el-input v-model="form.description" style="width: 370px;" />
+          <el-form-item label="名称" prop="name">
+            <el-input v-model="form.name" style="width: 370px;" />
           </el-form-item>
-          <el-form-item label="所属题目" prop="problemId">
-            <el-input v-model="form.problemId" style="width: 370px;" />
+          <el-form-item label="密码" prop="password">
+            <el-input v-model="form.password" style="width: 370px;" />
+          </el-form-item>
+          <el-form-item label="班级">
+            <el-input v-model="form.classId" style="width: 370px;" />
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -29,11 +34,12 @@
       <el-table ref="table" v-loading="crud.loading" :data="crud.data" size="small" style="width: 100%;" @selection-change="crud.selectionChangeHandler">
         <el-table-column type="selection" width="55" />
         <el-table-column prop="id" label="id" />
-        <el-table-column prop="description" label="描述" />
-        <el-table-column prop="problemId" label="所属题目" />
-        <el-table-column prop="createTime" label="创建时间" />
-        <el-table-column prop="updateTime" label="更新时间" />
-        <el-table-column v-if="checkPer(['admin','hint:edit','hint:del'])" label="操作" width="150px" align="center">
+        <el-table-column prop="name" label="名称" />
+        <el-table-column prop="password" label="密码" />
+        <el-table-column prop="classId" label="班级" />
+        <el-table-column prop="createTime" label="createTime" />
+        <el-table-column prop="updateTime" label="updateTime" />
+        <el-table-column v-if="checkPer(['admin','ojUser:edit','ojUser:del'])" label="操作" width="150px" align="center">
           <template slot-scope="scope">
             <udOperation
               :data="scope.row"
@@ -49,38 +55,39 @@
 </template>
 
 <script>
-import crudHint from '@/api/hint'
-import CRUD, { presenter, header, form, crud } from '@crud/crud'
+import crudOjUser from '@/api/ojUser'
+import CRUD, { crud, form, header, presenter } from '@crud/crud'
 import rrOperation from '@crud/RR.operation'
 import crudOperation from '@crud/CRUD.operation'
 import udOperation from '@crud/UD.operation'
 import pagination from '@crud/Pagination'
 
-const defaultForm = { id: null, description: null, problemId: null, createTime: null, updateTime: null }
+const defaultForm = { id: null, name: null, password: null, classId: null, createTime: null, updateTime: null }
 export default {
-  name: 'Hint',
+  name: 'OjUser',
   components: { pagination, crudOperation, rrOperation, udOperation },
   mixins: [presenter(), header(), form(defaultForm), crud()],
   cruds() {
-    return CRUD({ title: '提示', url: 'api/hint', idField: 'id', sort: 'id,desc', crudMethod: { ...crudHint }})
+    return CRUD({ title: '用户', url: 'api/ojUser', idField: 'id', sort: 'id,desc', crudMethod: { ...crudOjUser }})
   },
   data() {
     return {
       permission: {
-        add: ['admin', 'hint:add'],
-        edit: ['admin', 'hint:edit'],
-        del: ['admin', 'hint:del']
+        add: ['admin', 'ojUser:add'],
+        edit: ['admin', 'ojUser:edit'],
+        del: ['admin', 'ojUser:del']
       },
       rules: {
-        description: [
-          { required: true, message: '描述不能为空', trigger: 'blur' }
+        name: [
+          { required: true, message: '名称不能为空', trigger: 'blur' }
         ],
-        problemId: [
-          { required: true, message: '所属题目不能为空', trigger: 'blur' }
+        password: [
+          { required: true, message: '密码不能为空', trigger: 'blur' }
         ]
       },
       queryTypeOptions: [
-        { key: 'problemId', display_name: '所属题目' }
+        { key: 'name', display_name: '名称' },
+        { key: 'classId', display_name: '班级' }
       ]
     }
   },

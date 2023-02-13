@@ -28,7 +28,7 @@
             <el-input v-model="form.description" :rows="3" type="textarea" style="width: 370px;" />
           </el-form-item>
           <el-form-item label="试卷id" prop="examinationPaperId">
-            未设置字典，请手动设置 Select
+            <el-input v-model="form.examinationPaperId" style="width: 370px;" />
           </el-form-item>
           <el-form-item label="开始时间" prop="startTime">
             <el-date-picker v-model="form.startTime" type="datetime" style="width: 370px;" />

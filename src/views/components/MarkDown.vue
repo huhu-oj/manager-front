@@ -1,10 +1,10 @@
 <template>
   <div class="app-container">
-    <p class="warn-content">
-      Markdown 基于
-      <el-link type="primary" href="https://github.com/hinesboy/mavonEditor" target="_blank">MavonEditor</el-link>
-    </p>
-    <mavon-editor ref="md" :style="'height:' + height" @imgAdd="imgAdd" />
+    <!--    <p class="warn-content">-->
+    <!--      Markdown 基于-->
+    <!--      <el-link type="primary" href="https://github.com/hinesboy/mavonEditor" target="_blank">MavonEditor</el-link>-->
+    <!--    </p>-->
+    <mavon-editor ref="md" :value="content" @imgAdd="imgAdd" />
   </div>
 </template>
 
@@ -21,7 +21,8 @@ export default {
   },
   data() {
     return {
-      height: document.documentElement.clientHeight - 200 + 'px'
+      height: document.documentElement.clientHeight - 200 + 'px',
+      content: '123'
     }
   },
   computed: {

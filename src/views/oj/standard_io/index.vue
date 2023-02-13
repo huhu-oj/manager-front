@@ -13,8 +13,11 @@
       <!--表单组件-->
       <el-dialog :close-on-click-modal="false" :before-close="crud.cancelCU" :visible.sync="crud.status.cu > 0" :title="crud.status.title" width="500px">
         <el-form ref="form" :model="form" :rules="rules" size="small" label-width="80px">
-          <el-form-item label="描述" prop="description">
-            <el-input v-model="form.description" style="width: 370px;" />
+          <el-form-item label="输入" prop="input">
+            <el-input v-model="form.input" :rows="3" type="textarea" style="width: 370px;" />
+          </el-form-item>
+          <el-form-item label="输出" prop="output">
+            <el-input v-model="form.output" :rows="3" type="textarea" style="width: 370px;" />
           </el-form-item>
           <el-form-item label="所属题目" prop="problemId">
             <el-input v-model="form.problemId" style="width: 370px;" />
@@ -29,11 +32,12 @@
       <el-table ref="table" v-loading="crud.loading" :data="crud.data" size="small" style="width: 100%;" @selection-change="crud.selectionChangeHandler">
         <el-table-column type="selection" width="55" />
         <el-table-column prop="id" label="id" />
-        <el-table-column prop="description" label="描述" />
+        <el-table-column prop="input" label="输入" />
+        <el-table-column prop="output" label="输出" />
         <el-table-column prop="problemId" label="所属题目" />
-        <el-table-column prop="createTime" label="创建时间" />
-        <el-table-column prop="updateTime" label="更新时间" />
-        <el-table-column v-if="checkPer(['admin','hint:edit','hint:del'])" label="操作" width="150px" align="center">
+        <el-table-column prop="createTime" label="createTime" />
+        <el-table-column prop="updateTime" label="updateTime" />
+        <el-table-column v-if="checkPer(['admin','standardIo:edit','standardIo:del'])" label="操作" width="150px" align="center">
           <template slot-scope="scope">
             <udOperation
               :data="scope.row"
@@ -49,31 +53,34 @@
 </template>
 
 <script>
-import crudHint from '@/api/hint'
+import crudStandardIo from '@/api/standardIo'
 import CRUD, { presenter, header, form, crud } from '@crud/crud'
 import rrOperation from '@crud/RR.operation'
 import crudOperation from '@crud/CRUD.operation'
 import udOperation from '@crud/UD.operation'
 import pagination from '@crud/Pagination'
 
-const defaultForm = { id: null, description: null, problemId: null, createTime: null, updateTime: null }
+const defaultForm = { id: null, input: null, output: null, problemId: null, createTime: null, updateTime: null }
 export default {
-  name: 'Hint',
+  name: 'StandardIo',
   components: { pagination, crudOperation, rrOperation, udOperation },
   mixins: [presenter(), header(), form(defaultForm), crud()],
   cruds() {
-    return CRUD({ title: '提示', url: 'api/hint', idField: 'id', sort: 'id,desc', crudMethod: { ...crudHint }})
+    return CRUD({ title: '标准输入输出', url: 'api/standardIo', idField: 'id', sort: 'id,desc', crudMethod: { ...crudStandardIo }})
   },
   data() {
     return {
       permission: {
-        add: ['admin', 'hint:add'],
-        edit: ['admin', 'hint:edit'],
-        del: ['admin', 'hint:del']
+        add: ['admin', 'standardIo:add'],
+        edit: ['admin', 'standardIo:edit'],
+        del: ['admin', 'standardIo:del']
       },
       rules: {
-        description: [
-          { required: true, message: '描述不能为空', trigger: 'blur' }
+        input: [
+          { required: true, message: '输入不能为空', trigger: 'blur' }
+        ],
+        output: [
+          { required: true, message: '输出不能为空', trigger: 'blur' }
         ],
         problemId: [
           { required: true, message: '所属题目不能为空', trigger: 'blur' }
