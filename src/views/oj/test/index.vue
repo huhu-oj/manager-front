@@ -37,7 +37,7 @@
             <el-date-picker v-model="form.endTime" type="datetime" style="width: 370px;" />
           </el-form-item>
           <el-form-item label="是否启用" prop="enabled">
-            未设置字典，请手动设置 Radio
+            <el-switch v-model="form.enabled" />
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">

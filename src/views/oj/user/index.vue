@@ -19,7 +19,7 @@
             <el-input v-model="form.name" style="width: 370px;" />
           </el-form-item>
           <el-form-item label="密码" prop="password">
-            <el-input v-model="form.password" style="width: 370px;" />
+            <el-input v-model="form.password" type="password" style="width: 370px;" />
           </el-form-item>
           <el-form-item label="班级">
             <el-input v-model="form.classId" style="width: 370px;" />
@@ -35,7 +35,7 @@
         <el-table-column type="selection" width="55" />
         <el-table-column prop="id" label="id" />
         <el-table-column prop="name" label="名称" />
-        <el-table-column prop="password" label="密码" />
+        <!--        <el-table-column prop="password" label="密码" />-->
         <el-table-column prop="classId" label="班级" />
         <el-table-column prop="createTime" label="createTime" />
         <el-table-column prop="updateTime" label="updateTime" />

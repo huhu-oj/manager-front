@@ -73,6 +73,7 @@ import rrOperation from '@crud/RR.operation.vue'
 import crudOperation from '@crud/CRUD.operation.vue'
 import udOperation from '@crud/UD.operation.vue'
 import pagination from '@crud/Pagination.vue'
+import 'mavon-editor/dist/css/index.css'
 import { mavonEditor } from 'mavon-editor'
 
 const defaultForm = { id: null, name: null, description: null, description_html: null, createTime: null, updateTime: null }

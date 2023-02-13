@@ -18,8 +18,8 @@
           <el-form-item label="名称" prop="name">
             <el-input v-model="form.name" style="width: 370px;" />
           </el-form-item>
-          <el-form-item label="createTime" prop="createTime">
-            <el-input v-model="form.createTime" style="width: 370px;" />
+          <el-form-item label="年级" prop="gradeId">
+            <el-input v-model="form.gradeId" style="width: 370px;" />
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -52,7 +52,7 @@
 
 <script>
 import crudClazz from '@/api/clazz'
-import CRUD, { presenter, header, form, crud } from '@crud/crud'
+import CRUD, { crud, form, header, presenter } from '@crud/crud'
 import rrOperation from '@crud/RR.operation'
 import crudOperation from '@crud/CRUD.operation'
 import udOperation from '@crud/UD.operation'
@@ -79,6 +79,9 @@ export default {
         ],
         createTime: [
           { required: true, message: '不能为空', trigger: 'blur' }
+        ],
+        gradeId: [
+          { required: true, message: '年级不能为空', trigger: 'blur' }
         ]
       },
       queryTypeOptions: [
