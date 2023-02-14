@@ -4,8 +4,8 @@
     <div class="head-container">
       <div v-if="crud.props.searchToggle">
         <!-- 搜索 -->
-        <label class="el-form-item-label">标签名</label>
-        <el-input v-model="query.name" clearable placeholder="标签名" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
+        <label class="el-form-item-label">名称</label>
+        <el-input v-model="query.name" clearable placeholder="名称" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
         <rrOperation :crud="crud" />
       </div>
       <!--如果想在工具栏加入更多按钮，可以使用插槽方式， slot = 'left' or 'right'-->
@@ -13,11 +13,11 @@
       <!--表单组件-->
       <el-dialog :close-on-click-modal="false" :before-close="crud.cancelCU" :visible.sync="crud.status.cu > 0" :title="crud.status.title" width="500px">
         <el-form ref="form" :model="form" :rules="rules" size="small" label-width="80px">
-          <el-form-item label="标签名" prop="name">
+          <el-form-item label="名称" prop="name">
             <el-input v-model="form.name" style="width: 370px;" />
           </el-form-item>
-          <el-form-item label="链接">
-            <el-input v-model="form.url" style="width: 370px;" />
+          <el-form-item label="描述" prop="description">
+            <el-input v-model="form.description" :rows="3" type="textarea" style="width: 370px;" />
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -29,11 +29,11 @@
       <el-table ref="table" v-loading="crud.loading" :data="crud.data" size="small" style="width: 100%;" @selection-change="crud.selectionChangeHandler">
         <el-table-column type="selection" width="55" />
         <el-table-column prop="id" label="id" />
-        <el-table-column prop="name" label="标签名" />
-        <el-table-column prop="url" label="链接" />
+        <el-table-column prop="name" label="名称" />
+        <el-table-column prop="description" label="描述" />
         <el-table-column prop="createTime" label="创建时间" />
-        <el-table-column prop="updateTime" label="updateTime" />
-        <el-table-column v-if="checkPer(['admin','label:edit','label:del'])" label="操作" width="150px" align="center">
+        <el-table-column prop="updateTime" label="更新时间" />
+        <el-table-column v-if="checkPer(['admin','knowledge:edit','knowledge:del'])" label="操作" width="150px" align="center">
           <template slot-scope="scope">
             <udOperation
               :data="scope.row"
@@ -49,35 +49,38 @@
 </template>
 
 <script>
-import crudLabel from '@/api/label'
+import crudKnowledge from '@/api/knowledge'
 import CRUD, { crud, form, header, presenter } from '@crud/crud'
 import rrOperation from '@crud/RR.operation'
 import crudOperation from '@crud/CRUD.operation'
 import udOperation from '@crud/UD.operation'
 import pagination from '@crud/Pagination'
 
-const defaultForm = { id: null, name: null, url: null, createTime: null, updateTime: null }
+const defaultForm = { id: null, name: null, description: null, createTime: null, updateTime: null }
 export default {
-  name: 'Label',
+  name: 'Knowledge',
   components: { pagination, crudOperation, rrOperation, udOperation },
   mixins: [presenter(), header(), form(defaultForm), crud()],
   cruds() {
-    return CRUD({ title: '标签', url: 'api/label', idField: 'id', sort: 'id,desc', crudMethod: { ...crudLabel }})
+    return CRUD({ title: '知识点', url: 'api/knowledge', idField: 'id', sort: 'id,desc', crudMethod: { ...crudKnowledge }})
   },
   data() {
     return {
       permission: {
-        add: ['admin', 'label:add'],
-        edit: ['admin', 'label:edit'],
-        del: ['admin', 'label:del']
+        add: ['admin', 'knowledge:add'],
+        edit: ['admin', 'knowledge:edit'],
+        del: ['admin', 'knowledge:del']
       },
       rules: {
         name: [
-          { required: true, message: '标签名不能为空', trigger: 'blur' }
+          { required: true, message: '名称不能为空', trigger: 'blur' }
+        ],
+        description: [
+          { required: true, message: '描述不能为空', trigger: 'blur' }
         ]
       },
       queryTypeOptions: [
-        { key: 'name', display_name: '标签名' }
+        { key: 'name', display_name: '名称' }
       ]
     }
   },
