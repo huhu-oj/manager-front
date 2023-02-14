@@ -24,7 +24,7 @@
               <el-input v-model="form.name" style="width: 370px;" />
             </el-form-item>
             <el-form-item label="描述">
-              <mavon-editor ref="md" :value="form.description" @save="savePaperInfo" />
+              <mavon-editor ref="md" :value="form.description" @change="savePaperInfo" />
             </el-form-item>
           </el-form>
         </div>
@@ -76,7 +76,7 @@ import pagination from '@crud/Pagination.vue'
 import 'mavon-editor/dist/css/index.css'
 import { mavonEditor } from 'mavon-editor'
 
-const defaultForm = { id: null, name: null, description: null, description_html: null, createTime: null, updateTime: null }
+const defaultForm = { id: null, name: null, description: null, descriptionHtml: null, createTime: null, updateTime: null }
 export default {
   name: 'ExaminationPaper',
   components: { mavonEditor, pagination, crudOperation, rrOperation, udOperation },
@@ -113,7 +113,7 @@ export default {
     },
     savePaperInfo(markdown, render) {
       this.form.description = markdown
-      this.form.description_html = render
+      this.form.descriptionHtml = render
     },
     getProblems() {
       // crudProblem.

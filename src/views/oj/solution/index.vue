@@ -13,13 +13,13 @@
       <!--如果想在工具栏加入更多按钮，可以使用插槽方式， slot = 'left' or 'right'-->
       <crudOperation :permission="permission" />
       <!--表单组件-->
-      <el-dialog :close-on-click-modal="false" :before-close="crud.cancelCU" :visible.sync="crud.status.cu > 0" :title="crud.status.title" width="500px">
+      <el-dialog :close-on-click-modal="false" :before-close="crud.cancelCU" :visible.sync="crud.status.cu > 0" :title="crud.status.title" width="80%">
         <el-form ref="form" :model="form" :rules="rules" size="small" label-width="80px">
           <el-form-item label="标题" prop="title">
             <el-input v-model="form.title" style="width: 370px;" />
           </el-form-item>
           <el-form-item label="描述" prop="description">
-            <el-input v-model="form.description" :rows="3" type="textarea" style="width: 370px;" />
+            <mavon-editor ref="md" :value="form.description" @change="savePaperInfo" />
           </el-form-item>
           <el-form-item label="所属题目" prop="problemId">
             <el-input v-model="form.problemId" style="width: 370px;" />
@@ -62,10 +62,12 @@ import crudOperation from '@crud/CRUD.operation'
 import udOperation from '@crud/UD.operation'
 import pagination from '@crud/Pagination'
 
-const defaultForm = { id: null, title: null, description: null, problemId: null, createTime: null, updateTime: null }
+import 'mavon-editor/dist/css/index.css'
+import { mavonEditor } from 'mavon-editor'
+const defaultForm = { id: null, title: null, description: null, problemId: null, createTime: null, updateTime: null, descriptionHtml: null }
 export default {
   name: 'Solution',
-  components: { pagination, crudOperation, rrOperation, udOperation },
+  components: { mavonEditor, pagination, crudOperation, rrOperation, udOperation },
   mixins: [presenter(), header(), form(defaultForm), crud()],
   cruds() {
     return CRUD({ title: '题解', url: 'api/solution', idField: 'id', sort: 'id,desc', crudMethod: { ...crudSolution }})
@@ -98,6 +100,11 @@ export default {
     // 钩子：在获取表格数据之前执行，false 则代表不获取数据
     [CRUD.HOOK.beforeRefresh]() {
       return true
+    },
+
+    savePaperInfo(markdown, render) {
+      this.form.description = markdown
+      this.form.descriptionHtml = render
     }
   }
 }

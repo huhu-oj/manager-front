@@ -9,7 +9,7 @@
     "build:prod": "vue-cli-service build",
     "build:stage": "vue-cli-service build --mode staging",
     "preview": "node build/index.js --preview",
-    "lint": "eslint --ext .js,.vue src",
+    "lint": "eslint --ext .js,.vue src --fix",
     "test:unit": "jest --clearCache && vue-cli-service test:unit",
     "svgo": "svgo -f src/assets/icons/svg --config=src/assets/icons/svgo.yml",
     "new": "plop"
