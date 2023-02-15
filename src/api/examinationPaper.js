@@ -23,5 +23,10 @@ export function edit(data) {
     data
   })
 }
-
+export function listAllExaminationPaper() {
+  return request({
+    url: 'api/examinationPaper/all',
+    method: 'get'
+  })
+}
 export default { add, edit, del }

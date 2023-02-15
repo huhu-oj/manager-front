@@ -17,7 +17,7 @@
             <el-input v-model="form.name" style="width: 370px;" />
           </el-form-item>
           <el-form-item label="颜色">
-            <el-input v-model="form.color" style="width: 370px;" />
+            <el-color-picker v-model="form.color" size="large" />
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">

@@ -23,5 +23,11 @@ export function edit(data) {
     data
   })
 }
+export function listAllProblem() {
+  return request({
+    url: 'api/problem/all',
+    method: 'get'
+  })
+}
 
 export default { add, edit, del }

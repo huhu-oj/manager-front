@@ -19,7 +19,14 @@
             <el-input v-model="form.name" style="width: 370px;" />
           </el-form-item>
           <el-form-item label="年级" prop="gradeId">
-            <el-input v-model="form.gradeId" style="width: 370px;" />
+            <el-select v-model="form.gradeId" filterable placeholder="Select">
+              <el-option
+                v-for="item in gradeList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+              />
+            </el-select>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -57,6 +64,7 @@ import rrOperation from '@crud/RR.operation'
 import crudOperation from '@crud/CRUD.operation'
 import udOperation from '@crud/UD.operation'
 import pagination from '@crud/Pagination'
+import { listAllGrade } from '@/api/grade'
 
 const defaultForm = { id: null, name: null, createTime: null, updateTime: null, gradeId: null }
 export default {
@@ -68,6 +76,7 @@ export default {
   },
   data() {
     return {
+      gradeList: [],
       permission: {
         add: ['admin', 'clazz:add'],
         edit: ['admin', 'clazz:edit'],
@@ -90,10 +99,18 @@ export default {
       ]
     }
   },
+  created() {
+    this.setGradeList()
+  },
   methods: {
     // 钩子：在获取表格数据之前执行，false 则代表不获取数据
     [CRUD.HOOK.beforeRefresh]() {
       return true
+    },
+    setGradeList() {
+      listAllGrade().then(data => {
+        this.gradeList = data
+      })
     }
   }
 }

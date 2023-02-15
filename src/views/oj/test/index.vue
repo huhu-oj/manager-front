@@ -27,8 +27,16 @@
           <el-form-item label="备注" prop="description">
             <el-input v-model="form.description" :rows="3" type="textarea" style="width: 370px;" />
           </el-form-item>
-          <el-form-item label="试卷id" prop="examinationPaperId">
-            <el-input v-model="form.examinationPaperId" style="width: 370px;" />
+          <el-form-item label="试卷" prop="examinationPaperId">
+            <!--/*            <el-input v-model="form.examinationPaperId" style="width: 370px;" />*/-->
+            <el-select v-model="form.examinationPaperId" filterable placeholder="Select">
+              <el-option
+                v-for="item in examinationPaperList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+              />
+            </el-select>
           </el-form-item>
           <el-form-item label="开始时间" prop="startTime">
             <el-date-picker v-model="form.startTime" type="datetime" style="width: 370px;" />
@@ -72,6 +80,7 @@
 </template>
 
 <script>
+import { listAllExaminationPaper } from '@/api/examinationPaper'
 import crudTest from '@/api/test'
 import CRUD, { presenter, header, form, crud } from '@crud/crud'
 import rrOperation from '@crud/RR.operation'
@@ -79,7 +88,7 @@ import crudOperation from '@crud/CRUD.operation'
 import udOperation from '@crud/UD.operation'
 import pagination from '@crud/Pagination'
 
-const defaultForm = { id: null, title: null, description: null, examinationPaperId: null, startTime: null, endTime: null, enabled: null, createTime: null, updateTime: null }
+const defaultForm = { id: null, title: null, description: null, examinationPaperId: null, startTime: null, endTime: null, enabled: true, createTime: null, updateTime: null }
 export default {
   name: 'Test',
   components: { pagination, crudOperation, rrOperation, udOperation },
@@ -89,6 +98,7 @@ export default {
   },
   data() {
     return {
+      examinationPaperList: [],
       permission: {
         add: ['admin', 'test:add'],
         edit: ['admin', 'test:edit'],
@@ -129,10 +139,18 @@ export default {
       ]
     }
   },
+  created() {
+    this.setPaperList()
+  },
   methods: {
     // 钩子：在获取表格数据之前执行，false 则代表不获取数据
     [CRUD.HOOK.beforeRefresh]() {
       return true
+    },
+    setPaperList() {
+      listAllExaminationPaper().then(data => {
+        this.examinationPaperList = data
+      })
     }
   }
 }

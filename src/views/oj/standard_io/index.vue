@@ -20,7 +20,14 @@
             <el-input v-model="form.output" :rows="3" type="textarea" style="width: 370px;" />
           </el-form-item>
           <el-form-item label="所属题目" prop="problemId">
-            <el-input v-model="form.problemId" style="width: 370px;" />
+            <el-select v-model="form.problemId" filterable placeholder="Select">
+              <el-option
+                v-for="item in problemList"
+                :key="item.id"
+                :label="item.title"
+                :value="item.id"
+              />
+            </el-select>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -53,6 +60,7 @@
 </template>
 
 <script>
+import { listAllProblem } from '@/api/problem'
 import crudStandardIo from '@/api/standardIo'
 import CRUD, { presenter, header, form, crud } from '@crud/crud'
 import rrOperation from '@crud/RR.operation'
@@ -70,6 +78,7 @@ export default {
   },
   data() {
     return {
+      problemList: [],
       permission: {
         add: ['admin', 'standardIo:add'],
         edit: ['admin', 'standardIo:edit'],
@@ -91,10 +100,18 @@ export default {
       ]
     }
   },
+  created() {
+    this.setProblemList()
+  },
   methods: {
     // 钩子：在获取表格数据之前执行，false 则代表不获取数据
     [CRUD.HOOK.beforeRefresh]() {
       return true
+    },
+    setProblemList() {
+      listAllProblem().then(data => {
+        this.problemList = data
+      })
     }
   }
 }

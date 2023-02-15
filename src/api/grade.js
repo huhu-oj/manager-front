@@ -23,5 +23,10 @@ export function edit(data) {
     data
   })
 }
-
+export function listAllGrade() {
+  return request({
+    url: 'api/grade/all',
+    method: 'get'
+  })
+}
 export default { add, edit, del }
