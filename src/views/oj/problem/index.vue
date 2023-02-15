@@ -19,6 +19,24 @@
           <el-form-item label="描述" prop="description">
             <mavon-editor ref="md" :value="form.description" @change="savePaperInfo" />
           </el-form-item>
+          <el-form-item label="标签" prop="label">
+            <el-select
+              v-model="form.extra.label"
+              multiple
+              filterable
+              allow-create
+              default-first-option
+              :reserve-keyword="false"
+              placeholder="Choose tags for your article"
+            >
+              <el-option
+                v-for="item in labelList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+              />
+            </el-select>
+          </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button type="text" @click="crud.cancelCU">取消</el-button>
@@ -58,7 +76,8 @@ import pagination from '@crud/Pagination'
 
 import 'mavon-editor/dist/css/index.css'
 import { mavonEditor } from 'mavon-editor'
-const defaultForm = { id: null, title: null, description: null, createTime: null, updateTime: null, descriptionHtml: null }
+import { listAllLabel } from '@/api/label'
+const defaultForm = { id: null, title: null, description: '', createTime: null, updateTime: null, descriptionHtml: null, extra: {}}
 export default {
   name: 'Problem',
   components: { mavonEditor, pagination, crudOperation, rrOperation, udOperation },
@@ -68,6 +87,7 @@ export default {
   },
   data() {
     return {
+      labelList: [],
       permission: {
         add: ['admin', 'problem:add'],
         edit: ['admin', 'problem:edit'],
@@ -86,6 +106,9 @@ export default {
       ]
     }
   },
+  created() {
+    this.getLabelList()
+  },
   methods: {
     // 钩子：在获取表格数据之前执行，false 则代表不获取数据
     [CRUD.HOOK.beforeRefresh]() {
@@ -95,9 +118,10 @@ export default {
       this.form.description = markdown
       this.form.descriptionHtml = render
     },
-    getProblems() {
-      // crudProblem.
-
+    getLabelList() {
+      listAllLabel().then(data => {
+        this.labelList = data
+      })
     }
   }
 }

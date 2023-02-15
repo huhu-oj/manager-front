@@ -66,7 +66,7 @@ import pagination from '@crud/Pagination'
 
 import 'mavon-editor/dist/css/index.css'
 import { mavonEditor } from 'mavon-editor'
-const defaultForm = { id: null, description: null, problemId: null, createTime: null, updateTime: null, descriptionHtml: null }
+const defaultForm = { id: null, description: null, problemId: null, createTime: null, updateTime: null, descriptionHtml: '' }
 export default {
   name: 'Hint',
   components: { mavonEditor, pagination, crudOperation, rrOperation, udOperation },

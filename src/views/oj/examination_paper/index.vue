@@ -76,7 +76,7 @@ import pagination from '@crud/Pagination.vue'
 import 'mavon-editor/dist/css/index.css'
 import { mavonEditor } from 'mavon-editor'
 
-const defaultForm = { id: null, name: null, description: null, descriptionHtml: null, createTime: null, updateTime: null }
+const defaultForm = { id: null, name: null, description: '', descriptionHtml: null, createTime: null, updateTime: null }
 export default {
   name: 'ExaminationPaper',
   components: { mavonEditor, pagination, crudOperation, rrOperation, udOperation },
