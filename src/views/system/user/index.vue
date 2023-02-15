@@ -1,14 +1,14 @@
 <template>
   <div class="app-container">
     <el-row :gutter="20">
-      <!--侧边部门数据-->
+      <!--侧边单位数据-->
       <el-col :xs="9" :sm="6" :md="5" :lg="4" :xl="4">
         <div class="head-container">
           <el-input
             v-model="deptName"
             clearable
             size="small"
-            placeholder="输入部门名称搜索"
+            placeholder="输入单位名称搜索"
             prefix-icon="el-icon-search"
             class="filter-item"
             @input="getDeptDatas"
@@ -74,13 +74,13 @@
             <el-form-item label="邮箱" prop="email">
               <el-input v-model="form.email" />
             </el-form-item>
-            <el-form-item label="部门" prop="dept.id">
+            <el-form-item label="单位" prop="dept.id">
               <treeselect
                 v-model="form.dept.id"
                 :options="depts"
                 :load-options="loadDepts"
                 style="width: 178px"
-                placeholder="选择部门"
+                placeholder="选择单位"
               />
             </el-form-item>
             <el-form-item label="岗位" prop="jobs">
@@ -147,7 +147,7 @@
           <el-table-column prop="gender" label="性别" />
           <el-table-column :show-overflow-tooltip="true" prop="phone" width="100" label="电话" />
           <el-table-column :show-overflow-tooltip="true" width="135" prop="email" label="邮箱" />
-          <el-table-column :show-overflow-tooltip="true" prop="dept" label="部门">
+          <el-table-column :show-overflow-tooltip="true" prop="dept" label="单位">
             <template slot-scope="scope">
               <div>{{ scope.row.dept.name }}</div>
             </template>
@@ -341,7 +341,7 @@ export default {
     [CRUD.HOOK.afterValidateCU](crud) {
       if (!crud.form.dept.id) {
         this.$message({
-          message: '部门不能为空',
+          message: '单位不能为空',
           type: 'warning'
         })
         return false
@@ -362,7 +362,7 @@ export default {
       crud.form.jobs = userJobs
       return true
     },
-    // 获取左侧部门数据
+    // 获取左侧单位数据
     getDeptDatas(node, resolve) {
       const sort = 'id,desc'
       const params = { sort: sort }
@@ -410,7 +410,7 @@ export default {
         }
       })
     },
-    // 获取弹窗内部门数据
+    // 获取弹窗内单位数据
     loadDepts({ action, parentNode, callback }) {
       if (action === LOAD_CHILDREN_OPTIONS) {
         getDepts({ enabled: true, pid: parentNode.id }).then(res => {
@@ -426,7 +426,7 @@ export default {
         })
       }
     },
-    // 切换部门
+    // 切换单位
     handleNodeClick(data) {
       if (data.pid === 0) {
         this.query.deptId = null

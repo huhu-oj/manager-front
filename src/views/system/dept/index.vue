@@ -4,7 +4,7 @@
     <div class="head-container">
       <div v-if="crud.props.searchToggle">
         <!-- 搜索 -->
-        <el-input v-model="query.name" clearable size="small" placeholder="输入部门名称搜索" style="width: 200px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
+        <el-input v-model="query.name" clearable size="small" placeholder="输入单位名称搜索" style="width: 200px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
         <date-range-picker v-model="query.createTime" class="date-item" />
         <el-select v-model="query.enabled" clearable size="small" placeholder="状态" class="filter-item" style="width: 90px" @change="crud.toQuery">
           <el-option v-for="item in enabledTypeOptions" :key="item.key" :label="item.display_name" :value="item.key" />
@@ -16,10 +16,10 @@
     <!--表单组件-->
     <el-dialog append-to-body :close-on-click-modal="false" :before-close="crud.cancelCU" :visible.sync="crud.status.cu > 0" :title="crud.status.title" width="500px">
       <el-form ref="form" inline :model="form" :rules="rules" size="small" label-width="80px">
-        <el-form-item label="部门名称" prop="name">
+        <el-form-item label="单位名称" prop="name">
           <el-input v-model="form.name" style="width: 370px;" />
         </el-form-item>
-        <el-form-item label="部门排序" prop="deptSort">
+        <el-form-item label="单位排序" prop="deptSort">
           <el-input-number
             v-model.number="form.deptSort"
             :min="0"
@@ -28,7 +28,7 @@
             style="width: 370px;"
           />
         </el-form-item>
-        <el-form-item label="顶级部门">
+        <el-form-item label="顶级单位">
           <el-radio-group v-model="form.isTop" style="width: 140px">
             <el-radio label="1">是</el-radio>
             <el-radio label="0">否</el-radio>
@@ -37,7 +37,7 @@
         <el-form-item label="状态" prop="enabled">
           <el-radio v-for="item in dict.dept_status" :key="item.id" v-model="form.enabled" :label="item.value">{{ item.label }}</el-radio>
         </el-form-item>
-        <el-form-item v-if="form.isTop === '0'" style="margin-bottom: 0;" label="上级部门" prop="pid">
+        <el-form-item v-if="form.isTop === '0'" style="margin-bottom: 0;" label="上级单位" prop="pid">
           <treeselect
             v-model="form.pid"
             :load-options="loadDepts"
@@ -110,7 +110,7 @@ export default {
   name: 'Dept',
   components: { Treeselect, crudOperation, rrOperation, udOperation, DateRangePicker },
   cruds() {
-    return CRUD({ title: '部门', url: 'api/dept', crudMethod: { ...crudDept }})
+    return CRUD({ title: '单位', url: 'api/dept', crudMethod: { ...crudDept }})
   },
   mixins: [presenter(), header(), form(defaultForm), crud()],
   // 设置数据字典
@@ -187,7 +187,7 @@ export default {
         })
       })
     },
-    // 获取弹窗内部门数据
+    // 获取弹窗内单位数据
     loadDepts({ action, parentNode, callback }) {
       if (action === LOAD_CHILDREN_OPTIONS) {
         crudDept.getDepts({ enabled: true, pid: parentNode.id }).then(res => {
@@ -207,7 +207,7 @@ export default {
     [CRUD.HOOK.afterValidateCU]() {
       if (this.form.pid !== null && this.form.pid === this.form.id) {
         this.$message({
-          message: '上级部门不能为空',
+          message: '上级单位不能为空',
           type: 'warning'
         })
         return false
@@ -219,7 +219,7 @@ export default {
     },
     // 改变状态
     changeEnabled(data, val) {
-      this.$confirm('此操作将 "' + this.dict.label.dept_status[val] + '" ' + data.name + '部门, 是否继续？', '提示', {
+      this.$confirm('此操作将 "' + this.dict.label.dept_status[val] + '" ' + data.name + '单位, 是否继续？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
