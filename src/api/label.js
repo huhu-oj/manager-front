@@ -23,5 +23,10 @@ export function edit(data) {
     data
   })
 }
-
+export function listAllLabel() {
+  return request({
+    url: 'api/label/all',
+    method: 'get'
+  })
+}
 export default { add, edit, del }
