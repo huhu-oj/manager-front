@@ -66,7 +66,7 @@
         <el-table-column prop="userId" label="所属用户" />
         <el-table-column prop="code" label="代码" />
         <el-table-column prop="executeTime" label="执行时间" />
-        <el-table-column prop="languageId" label="所属语言" />
+        <el-table-column prop="languageName" label="所属语言" />
         <el-table-column prop="log" label="日志" />
         <el-table-column prop="error" label="错误日志" />
         <el-table-column prop="passNum" label="通过数" />
@@ -98,7 +98,7 @@ import crudOperation from '@crud/CRUD.operation'
 import udOperation from '@crud/UD.operation'
 import pagination from '@crud/Pagination'
 
-const defaultForm = { id: null, problemId: null, userId: null, code: null, executeTime: null, languageId: null, log: null, error: null, passNum: null, notPassNum: null, executeResultId: null, note: null, createTime: null, updateTime: null }
+const defaultForm = { id: null, problemId: null, userId: null, code: null, executeTime: null, languageName: null, log: null, error: null, passNum: null, notPassNum: null, executeResultId: null, note: null, createTime: null, updateTime: null }
 export default {
   name: 'AnswerRecord',
   components: { pagination, crudOperation, rrOperation, udOperation },
