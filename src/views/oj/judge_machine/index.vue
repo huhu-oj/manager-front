@@ -10,6 +10,8 @@
         <el-input v-model="query.name" clearable placeholder="名称" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
         <label class="el-form-item-label">是否启动</label>
         <el-input v-model="query.enabled" clearable placeholder="是否启动" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
+        <label class="el-form-item-label">语言id</label>
+        <el-input v-model="query.languageId" clearable placeholder="语言id" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
         <rrOperation :crud="crud" />
       </div>
       <!--如果想在工具栏加入更多按钮，可以使用插槽方式， slot = 'left' or 'right'-->
@@ -24,7 +26,13 @@
             <el-input v-model="form.url" :rows="3" type="textarea" style="width: 370px;" />
           </el-form-item>
           <el-form-item label="是否启动" prop="enabled">
-            <el-switch v-model="form.enabled" />
+            <el-radio-group v-model="form.enabled">
+              <el-radio
+                v-for="item in dict.judge_machine_status"
+                :key="item.id"
+                :label="item.value"
+              >{{ item.label }}</el-radio>
+            </el-radio-group>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -37,7 +45,16 @@
         <el-table-column type="selection" width="55" />
         <el-table-column prop="name" label="名称" />
         <el-table-column prop="url" label="主机地址" />
-        <el-table-column prop="enabled" label="是否启动" />
+        <el-table-column prop="enabled" label="是否启动">
+          <template slot-scope="scope">
+            <el-switch
+              v-model="scope.row.enabled"
+              active-color="#409EFF"
+              inactive-color="#F56C6C"
+              @change="changeEnabled(scope.row, scope.row.enabled)"
+            />
+          </template>
+        </el-table-column>
         <el-table-column prop="createTime" label="createTime" />
         <el-table-column prop="updateTime" label="updateTime" />
         <el-table-column prop="supportLanguage" label="支持的语言" />
@@ -63,12 +80,14 @@ import rrOperation from '@crud/RR.operation'
 import crudOperation from '@crud/CRUD.operation'
 import udOperation from '@crud/UD.operation'
 import pagination from '@crud/Pagination'
+import crudUser from '@/api/system/user'
 
 const defaultForm = { id: null, name: null, username: null, password: null, url: null, enabled: null, createTime: null, updateTime: null, supportLanguage: null }
 export default {
   name: 'JudgeMachine',
   components: { pagination, crudOperation, rrOperation, udOperation },
   mixins: [presenter(), header(), form(defaultForm), crud()],
+  dicts: ['judge_machine_status'],
   cruds() {
     return CRUD({ title: '判题机管理接口', url: 'api/judgeMachine', idField: 'id', sort: 'id,desc', crudMethod: { ...crudJudgeMachine }})
   },
@@ -99,7 +118,8 @@ export default {
       queryTypeOptions: [
         { key: 'id', display_name: 'id' },
         { key: 'name', display_name: '名称' },
-        { key: 'enabled', display_name: '是否启动' }
+        { key: 'enabled', display_name: '是否启动' },
+        { key: 'languageId', display_name: '语言id' }
       ]
     }
   },
@@ -107,6 +127,22 @@ export default {
     // 钩子：在获取表格数据之前执行，false 则代表不获取数据
     [CRUD.HOOK.beforeRefresh]() {
       return true
+    },
+    // 改变状态
+    changeEnabled(data, val) {
+      this.$confirm('此操作将 "' + this.dict.label.judge_machine_status[val] + '" ' + data.username + ', 是否继续？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        crudUser.edit(data).then(res => {
+          this.crud.notify(this.dict.label.judge_machine_status[val] + '成功', CRUD.NOTIFICATION_TYPE.SUCCESS)
+        }).catch(() => {
+          data.enabled = !data.enabled
+        })
+      }).catch(() => {
+        data.enabled = !data.enabled
+      })
     }
   }
 }
