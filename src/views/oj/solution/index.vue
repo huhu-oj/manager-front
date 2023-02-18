@@ -21,8 +21,8 @@
           <el-form-item label="描述" prop="description">
             <mavon-editor ref="md" :value="form.description" @change="savePaperInfo" />
           </el-form-item>
-          <el-form-item label="所属题目" prop="problemId">
-            <el-select v-model="form.problemId" filterable placeholder="Select">
+          <el-form-item label="所属题目" prop="problem.id">
+            <el-select v-model="form.problem.id" filterable placeholder="Select">
               <el-option
                 v-for="item in problemList"
                 :key="item.id"
@@ -43,7 +43,7 @@
         <el-table-column prop="id" label="id" />
         <el-table-column prop="title" label="标题" />
         <el-table-column prop="description" label="描述" />
-        <el-table-column prop="problemId" label="所属题目" />
+        <el-table-column prop="problem.title" label="所属题目" />
         <el-table-column prop="createTime" label="创建时间" />
         <el-table-column prop="updateTime" label="更新时间" />
         <el-table-column v-if="checkPer(['admin','solution:edit','solution:del'])" label="操作" width="150px" align="center">
@@ -64,7 +64,7 @@
 <script>
 import { listAllProblem } from '@/api/problem'
 import crudSolution from '@/api/solution'
-import CRUD, { presenter, header, form, crud } from '@crud/crud'
+import CRUD, { crud, form, header, presenter } from '@crud/crud'
 import rrOperation from '@crud/RR.operation'
 import crudOperation from '@crud/CRUD.operation'
 import udOperation from '@crud/UD.operation'
@@ -72,7 +72,8 @@ import pagination from '@crud/Pagination'
 
 import 'mavon-editor/dist/css/index.css'
 import { mavonEditor } from 'mavon-editor'
-const defaultForm = { id: null, title: null, description: null, problemId: null, createTime: null, updateTime: null, descriptionHtml: '' }
+
+const defaultForm = { id: null, title: null, description: null, problem: { id: null, title: null }, createTime: null, updateTime: null, descriptionHtml: '' }
 export default {
   name: 'Solution',
   components: { mavonEditor, pagination, crudOperation, rrOperation, udOperation },

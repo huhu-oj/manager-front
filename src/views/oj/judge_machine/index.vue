@@ -25,15 +25,6 @@
           <el-form-item label="主机地址" prop="url">
             <el-input v-model="form.url" :rows="3" type="textarea" style="width: 370px;" />
           </el-form-item>
-          <el-form-item label="是否启动" prop="enabled">
-            <el-radio-group v-model="form.enabled">
-              <el-radio
-                v-for="item in dict.judge_machine_status"
-                :key="item.id"
-                :label="item.value"
-              >{{ item.label }}</el-radio>
-            </el-radio-group>
-          </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button type="text" @click="crud.cancelCU">取消</el-button>
@@ -75,14 +66,13 @@
 
 <script>
 import crudJudgeMachine from '@/api/judgeMachine'
-import CRUD, { presenter, header, form, crud } from '@crud/crud'
+import CRUD, { crud, form, header, presenter } from '@crud/crud'
 import rrOperation from '@crud/RR.operation'
 import crudOperation from '@crud/CRUD.operation'
 import udOperation from '@crud/UD.operation'
 import pagination from '@crud/Pagination'
-import crudUser from '@/api/system/user'
 
-const defaultForm = { id: null, name: null, username: null, password: null, url: null, enabled: null, createTime: null, updateTime: null, supportLanguage: null }
+const defaultForm = { id: null, name: null, username: null, password: null, url: null, enabled: 1, createTime: null, updateTime: null, supportLanguage: null }
 export default {
   name: 'JudgeMachine',
   components: { pagination, crudOperation, rrOperation, udOperation },
@@ -130,12 +120,12 @@ export default {
     },
     // 改变状态
     changeEnabled(data, val) {
-      this.$confirm('此操作将 "' + this.dict.label.judge_machine_status[val] + '" ' + data.username + ', 是否继续？', '提示', {
+      this.$confirm('此操作将 "' + this.dict.label.judge_machine_status[val] + '" ' + data.name + ', 是否继续？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        crudUser.edit(data).then(res => {
+        crudJudgeMachine.edit(data).then(res => {
           this.crud.notify(this.dict.label.judge_machine_status[val] + '成功', CRUD.NOTIFICATION_TYPE.SUCCESS)
         }).catch(() => {
           data.enabled = !data.enabled

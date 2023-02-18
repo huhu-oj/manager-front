@@ -19,8 +19,8 @@
           <el-form-item label="输出" prop="output">
             <el-input v-model="form.output" :rows="3" type="textarea" style="width: 370px;" />
           </el-form-item>
-          <el-form-item label="所属题目" prop="problemId">
-            <el-select v-model="form.problemId" filterable placeholder="Select">
+          <el-form-item label="所属题目" prop="problem.id">
+            <el-select v-model="form.problem.id" filterable placeholder="Select">
               <el-option
                 v-for="item in problemList"
                 :key="item.id"
@@ -41,7 +41,7 @@
         <el-table-column prop="id" label="id" />
         <el-table-column prop="input" label="输入" />
         <el-table-column prop="output" label="输出" />
-        <el-table-column prop="problemId" label="所属题目" />
+        <el-table-column prop="problem.title" label="所属题目" />
         <el-table-column prop="createTime" label="createTime" />
         <el-table-column prop="updateTime" label="updateTime" />
         <el-table-column v-if="checkPer(['admin','standardIo:edit','standardIo:del'])" label="操作" width="150px" align="center">
@@ -62,13 +62,13 @@
 <script>
 import { listAllProblem } from '@/api/problem'
 import crudStandardIo from '@/api/standardIo'
-import CRUD, { presenter, header, form, crud } from '@crud/crud'
+import CRUD, { crud, form, header, presenter } from '@crud/crud'
 import rrOperation from '@crud/RR.operation'
 import crudOperation from '@crud/CRUD.operation'
 import udOperation from '@crud/UD.operation'
 import pagination from '@crud/Pagination'
 
-const defaultForm = { id: null, input: null, output: null, problemId: null, createTime: null, updateTime: null }
+const defaultForm = { id: null, input: null, output: null, problem: { id: null, title: null }, createTime: null, updateTime: null }
 export default {
   name: 'StandardIo',
   components: { pagination, crudOperation, rrOperation, udOperation },

@@ -20,7 +20,7 @@
       <el-dialog :close-on-click-modal="false" :before-close="crud.cancelCU" :visible.sync="crud.status.cu > 0" :title="crud.status.title" width="500px">
         <el-form ref="form" :model="form" :rules="rules" size="small" label-width="80px">
           <el-form-item label="所属题目" prop="problemId">
-            <el-input v-model="form.problemId" style="width: 370px;" />
+            <el-input v-model="form.problem.id" style="width: 370px;" />
           </el-form-item>
           <el-form-item label="所属用户" prop="userId">
             <el-input v-model="form.userId" style="width: 370px;" />
@@ -32,7 +32,7 @@
             <el-input v-model="form.executeTime" style="width: 370px;" />
           </el-form-item>
           <el-form-item label="所属语言" prop="languageId">
-            <el-input v-model="form.languageId" style="width: 370px;" />
+            <el-input v-model="form.language.id" style="width: 370px;" />
           </el-form-item>
           <el-form-item label="日志" prop="log">
             <el-input v-model="form.log" :rows="3" type="textarea" style="width: 370px;" />
@@ -62,16 +62,16 @@
       <el-table ref="table" v-loading="crud.loading" :data="crud.data" size="small" style="width: 100%;" @selection-change="crud.selectionChangeHandler">
         <el-table-column type="selection" width="55" />
         <el-table-column prop="id" label="id" />
-        <el-table-column prop="problemId" label="所属题目" />
+        <el-table-column prop="problem.title" label="所属题目" />
         <el-table-column prop="userId" label="所属用户" />
         <el-table-column prop="code" label="代码" />
         <el-table-column prop="executeTime" label="执行时间" />
-        <el-table-column prop="languageName" label="所属语言" />
+        <el-table-column prop="language.name" label="所属语言" />
         <el-table-column prop="log" label="日志" />
         <el-table-column prop="error" label="错误日志" />
         <el-table-column prop="passNum" label="通过数" />
         <el-table-column prop="notPassNum" label="未通过数" />
-        <el-table-column prop="executeResultId" label="执行结果" />
+        <el-table-column prop="executeResult.name" label="执行结果" />
         <el-table-column prop="note" label="备注" />
         <el-table-column prop="createTime" label="创建时间" />
         <el-table-column prop="updateTime" label="更新时间" />
@@ -89,22 +89,22 @@
     </div>
   </div>
 </template>
-
+<!--只读-->
 <script>
 import crudAnswerRecord from '@/api/answerRecord'
-import CRUD, { presenter, header, form, crud } from '@crud/crud'
+import CRUD, { crud, form, header, presenter } from '@crud/crud'
 import rrOperation from '@crud/RR.operation'
 import crudOperation from '@crud/CRUD.operation'
 import udOperation from '@crud/UD.operation'
 import pagination from '@crud/Pagination'
 
-const defaultForm = { id: null, problemId: null, userId: null, code: null, executeTime: null, languageName: null, log: null, error: null, passNum: null, notPassNum: null, executeResultId: null, note: null, createTime: null, updateTime: null }
+const defaultForm = { id: null, problem: { id: null, title: null }, userId: null, code: null, executeTime: null, language: { id: null, name: null }, log: null, error: null, passNum: null, notPassNum: null, executeResult: { id: null, name: null }, note: null, createTime: null, updateTime: null }
 export default {
   name: 'AnswerRecord',
   components: { pagination, crudOperation, rrOperation, udOperation },
   mixins: [presenter(), header(), form(defaultForm), crud()],
   cruds() {
-    return CRUD({ title: '做题记录', url: 'api/answerRecord', idField: 'id', sort: 'id,desc', crudMethod: { ...crudAnswerRecord }})
+    return CRUD({ title: '做题记录', url: 'api/answerRecord', idField: 'id', sort: 'id,desc', crudMethod: { ...crudAnswerRecord }, optShow: { add: false, edit: false, del: false, reset: true }})
   },
   data() {
     return {
