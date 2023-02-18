@@ -24,4 +24,10 @@ export function edit(data) {
   })
 }
 
+export function listAllKnowledge() {
+  return request({
+    url: 'api/knowledge/all',
+    method: 'get'
+  })
+}
 export default { add, edit, del }
