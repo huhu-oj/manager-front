@@ -18,7 +18,7 @@
             <el-step title="提示" />
             <el-step title="题解" />
             <el-step title="输入输出" />
-            <el-step title="结束" />
+            <el-step title="测试" />
           </el-steps>
           <div v-show="step+1 === 1">
             <el-form-item label="标题" prop="title">
@@ -94,22 +94,83 @@
             </el-tabs>
           </div>
           <div v-show="step+1 === 3">
-            题解
+            <el-tabs
+              v-if="crud.status.cu > 0"
+              v-model="activeSolution"
+              type="card"
+              editable
+              @edit="editSolutionTab"
+            >
+              <el-tab-pane
+                v-for="item in form.solutions"
+                :key="item.name"
+                :label="item.title"
+                :name="item.name"
+                lazy
+              >
+                <el-form-item label="标题">
+                  <el-input v-model="item.title" />
+                </el-form-item>
+                <el-form-item label="描述">
+                  <mavon-editor :value="item.description" @change="saveSolutionInfo" />
+                </el-form-item>
+              </el-tab-pane>
+            </el-tabs>
           </div>
           <div v-show="step+1 === 4">
-            输入输出
+            <el-table size="small" :data="form.standardIos">
+              <el-table-column prop="input" label="输入">
+                <template #default="scope">
+                  <el-input v-model="scope.row.input" :autosize="{ minRows: 2 }" type="textarea" />
+                </template>
+              </el-table-column>
+              <el-table-column prop="output" label="输出">
+                <template #default="scope">
+                  <el-input v-model="scope.row.output" :autosize="{ minRows: 2 }" type="textarea" />
+                </template>
+              </el-table-column>
+              <el-table-column label="操作" width="150px" align="center">
+                <template #default="scope">
+                  <el-popconfirm title="删除该条输入输出？" @confirm="cancelStandardIo(scope.row)">
+                    <template #reference>
+                      <el-button>删除</el-button>
+                    </template>
+                  </el-popconfirm>
+                </template>
+              </el-table-column>
+            </el-table>
+            <el-button @click="plusOneStandardIo">添加</el-button>
+          </div>
+          <div v-if="step+1 === 5">
+            <el-tabs
+              v-if="crud.status.cu > 0"
+              v-model="activeSolution"
+              type="card"
+              editable
+              @edit="editSolutionTab"
+            >
+              <el-tab-pane
+                v-for="item in form.solutions"
+                :key="item.name"
+                :label="item.name"
+                :name="item.name"
+                lazy
+              >
+                <code-edit :value="solution" :height="height" :language="'java'" :language-id="item.language.id" />
+              </el-tab-pane>
+            </el-tabs>
           </div>
         </el-form>
         <div slot="footer" class="dialog-footer">
 
           <el-button-group>
-            <el-button type="primary" @click="plusStep(false)"><svg-icon icon-class="left" />上一步</el-button>
-            <el-button type="primary" @click="plusStep(true)">
+            <el-button type="primary" :disabled="step === 0" @click="plusStep(false)"><svg-icon icon-class="left" />上一步</el-button>
+            <el-button type="primary" :disabled="step === 4" @click="plusStep(true)">
               下一步<svg-icon icon-class="right" />
             </el-button>
           </el-button-group>
           <el-button type="text" @click="crud.cancelCU">取消</el-button>
-          <el-button :loading="crud.status.cu === 2" type="primary" @click="crud.submitCU">确认</el-button>
+          <el-button v-if="step === 4" :loading="crud.status.cu === 2" type="primary" @click="crud.submitCU">确认</el-button>
         </div>
       </el-dialog>
       <!--表格渲染-->
@@ -143,21 +204,117 @@ import crudOperation from '@crud/CRUD.operation'
 import udOperation from '@crud/UD.operation'
 import pagination from '@crud/Pagination'
 
+import CodeEdit from '@/components/CodeEdit/index'
 import 'mavon-editor/dist/css/index.css'
 import { mavonEditor } from 'mavon-editor'
 import { listAllLabel } from '@/api/label'
 import { listAllKnowledge } from '@/api/knowledge'
 
-const defaultForm = { id: null, title: null, description: '', createTime: null, updateTime: null, descriptionHtml: null, labels: [], labelIds: [], knowledges: [], hints: [] }
+const defaultForm = { id: null, title: null, description: '', createTime: null, updateTime: null, descriptionHtml: null, labels: [], labelIds: [], knowledges: [], hints: [], solutions: [], standardIos: [] }
 export default {
   name: 'Problem',
-  components: { mavonEditor, pagination, crudOperation, rrOperation, udOperation },
+  components: { CodeEdit, mavonEditor, pagination, crudOperation, rrOperation, udOperation },
   mixins: [presenter(), header(), form(defaultForm), crud()],
   cruds() {
     return CRUD({ title: '问题', url: 'api/problem', idField: 'id', sort: 'id,desc', crudMethod: { ...crudProblem }})
   },
   data() {
     return {
+      height: document.documentElement.clientHeight - 410 + 'px',
+      solution: `
+
+/*
+*  Copyright 2019-2020 Zheng Jie
+*
+*  Licensed under the Apache License, Version 2.0 (the "License");
+*  you may not use this file except in compliance with the License.
+*  You may obtain a copy of the License at
+*
+*  http://www.apache.org/licenses/LICENSE-2.0
+*
+*  Unless required by applicable law or agreed to in writing, software
+*  distributed under the License is distributed on an "AS IS" BASIS,
+*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+*  See the License for the specific language governing permissions and
+*  limitations under the License.
+*/
+package me.zhengjie.rest;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import lombok.RequiredArgsConstructor;
+import me.zhengjie.annotation.Log;
+import me.zhengjie.domain.AnswerRecord;
+import me.zhengjie.service.AnswerRecordService;
+import me.zhengjie.service.dto.AnswerRecordQueryCriteria;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+/**
+* @website https://eladmin.vip
+* @author nwl
+* @date 2023-02-13
+**/
+@RestController
+@RequiredArgsConstructor
+@Api(tags = "oj:做题记录管理")
+@RequestMapping("/api/answerRecord")
+public class AnswerRecordController {
+
+    private final AnswerRecordService answerRecordService;
+
+    @Log("导出数据")
+    @ApiOperation("导出数据")
+    @GetMapping(value = "/download")
+    @PreAuthorize("@el.check('answerRecord:list')")
+    public void exportAnswerRecord(HttpServletResponse response, AnswerRecordQueryCriteria criteria) throws IOException {
+        answerRecordService.download(answerRecordService.queryAll(criteria), response);
+    }
+
+    @GetMapping
+    @Log("查询做题记录")
+    @ApiOperation("查询做题记录")
+    @PreAuthorize("@el.check('answerRecord:list')")
+    public ResponseEntity<Object> queryAnswerRecord(AnswerRecordQueryCriteria criteria, Pageable pageable){
+        return new ResponseEntity<>(answerRecordService.queryAll(criteria,pageable),HttpStatus.OK);
+    }
+
+    @PostMapping
+    @Log("新增做题记录")
+    @ApiOperation("新增做题记录")
+    @PreAuthorize("@el.check('answerRecord:add')")
+    public ResponseEntity<Object> createAnswerRecord(@Validated @RequestBody AnswerRecord resources){
+        return new ResponseEntity<>(answerRecordService.create(resources),HttpStatus.CREATED);
+    }
+
+    @PutMapping
+    @Log("修改做题记录")
+    @ApiOperation("修改做题记录")
+    @PreAuthorize("@el.check('answerRecord:edit')")
+    public ResponseEntity<Object> updateAnswerRecord(@Validated @RequestBody AnswerRecord resources){
+        answerRecordService.update(resources);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @DeleteMapping
+    @Log("删除做题记录")
+    @ApiOperation("删除做题记录")
+    @PreAuthorize("@el.check('answerRecord:del')")
+    public ResponseEntity<Object> deleteAnswerRecord(@RequestBody Long[] ids) {
+        answerRecordService.deleteAll(ids);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+}
+      `,
+      activeSolution: '',
+      solutionIndex: 0,
       activeHint: '',
       hintIndex: 0,
       step: 0,
@@ -205,6 +362,16 @@ export default {
         })
         this.activeHint = this.form.hints[0].name
       }
+      // 题解
+      this.solutionIndex = 0
+      if (this.form.solutions.length === 0) {
+        this.editSolutionTab('solution', 'add')
+      } else {
+        this.form.solutions.forEach(solution => {
+          solution.name = `${++this.solutionIndex}`
+        })
+        this.activeSolution = this.form.solutions[0].name
+      }
     },
     [CRUD.HOOK.beforeSubmit]() {
       this.form.labels = this.form.labelIds.map(label => { return { 'id': label } })
@@ -218,6 +385,14 @@ export default {
         if (hint.name === this.activeHint) {
           hint.description = markdown
           hint.descriptionHtml = render
+        }
+      })
+    },
+    saveSolutionInfo(markdown, render) {
+      this.form.solutions.forEach(solution => {
+        if (solution.name === this.activeSolution) {
+          solution.description = markdown
+          solution.descriptionHtml = render
         }
       })
     },
@@ -239,6 +414,9 @@ export default {
     cancelKnowledge(row) {
       this.form.knowledges.splice(row.$index, 1)
     },
+    cancelStandardIo(row) {
+      this.form.standardIos.splice(row.$index, 1)
+    },
     plusStep(bool) {
       if (bool) {
         this.step = (this.step + 1) % 5
@@ -246,6 +424,9 @@ export default {
         const tempStep = (this.step - 1) % 5
         tempStep < 0 ? this.step = 0 : this.step = tempStep
       }
+    },
+    plusOneStandardIo() {
+      this.form.standardIos.push({})
     },
     editHintTab(targetName, action) {
       if (action === 'add') {
@@ -272,6 +453,34 @@ export default {
         }
         this.activeHint = activeName
         this.form.hints = tabs.filter((tab) => tab.name !== targetName)
+      }
+    },
+    editSolutionTab(targetName, action) {
+      if (action === 'add') {
+        const newTabName = `${++this.solutionIndex}`
+        this.form.solutions.push({
+          title: newTabName,
+          name: newTabName,
+          language: {},
+          description: '',
+          descriptionHtml: ''
+        })
+        this.activeSolution = newTabName
+      } else if (action === 'remove') {
+        const tabs = this.form.solutions
+        let activeName = this.activeSolution
+        if (activeName === targetName) {
+          tabs.forEach((tab, index) => {
+            if (tab.name === targetName) {
+              const nextTab = tabs[index + 1] || tabs[index - 1]
+              if (nextTab) {
+                activeName = nextTab.name
+              }
+            }
+          })
+        }
+        this.activeSolution = activeName
+        this.form.solutions = tabs.filter((tab) => tab.name !== targetName)
       }
     }
   }
