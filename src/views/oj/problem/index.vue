@@ -76,6 +76,7 @@
           </div>
           <div v-show="step+1 === 2">
             <el-tabs
+              v-if="crud.status.cu > 0"
               v-model="activeHint"
               type="card"
               editable
@@ -86,8 +87,9 @@
                 :key="item.name"
                 :label="item.name"
                 :name="item.name"
+                lazy
               >
-                <mavon-editor ref="md" :value="item.description" @change="saveHintInfo" />
+                <mavon-editor :value="item.description" @change="saveHintInfo" />
               </el-tab-pane>
             </el-tabs>
           </div>
@@ -191,19 +193,21 @@ export default {
     [CRUD.HOOK.afterToEdit]() {
       this.form.labelIds = this.form.labels.map(label => label.id)
     },
-    [CRUD.HOOK.beforeToCU]() {
+    [CRUD.HOOK.afterToCU]() {
       // 表单应该重置到第一页
       this.step = 0
       this.hintIndex = 0
       if (this.form.hints.length === 0) {
         this.editHintTab('hint', 'add')
       } else {
-        return 0
+        this.form.hints.forEach(hint => {
+          hint.name = `提示 ${++this.hintIndex}`
+        })
+        this.activeHint = this.form.hints[0].name
       }
     },
     [CRUD.HOOK.beforeSubmit]() {
       this.form.labels = this.form.labelIds.map(label => { return { 'id': label } })
-      console.log(this.form.labels)
     },
     savePaperInfo(markdown, render) {
       this.form.description = markdown
@@ -229,8 +233,8 @@ export default {
     },
     selectOneKnowledge(row) {
       row.weight = 1
-      const bool = this.form.knowledges.some(knowledge => { knowledge.id === row.id })
-      bool ? 0 : this.form.knowledges.push(row)
+      this.form.knowledges.push(row)
+      this.form.knowledges = Array.from(new Set(this.form.knowledges))
     },
     cancelKnowledge(row) {
       this.form.knowledges.splice(row.$index, 1)
