@@ -35,7 +35,7 @@
                 allow-create
                 default-first-option
                 :reserve-keyword="false"
-                placeholder="Choose tags for your article"
+                placeholder="关联标签"
               >
                 <el-option
                   v-for="item in labelList"
