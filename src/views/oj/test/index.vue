@@ -7,13 +7,25 @@
         <label class="el-form-item-label">标题</label>
         <el-input v-model="query.title" clearable placeholder="标题" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
         <label class="el-form-item-label">开始时间</label>
-        <el-input v-model="query.startTime" clearable placeholder="开始时间" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
+        <!--        <el-input v-model="query.startTime" clearable placeholder="开始时间" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />-->
+        <el-date-picker
+          v-model="query.startTime"
+          type="date"
+          value-format="yyyy-MM-dd hh:mm:ss"
+          placeholder="选择一个日期"
+          :shortcuts="shortcuts"
+          size="small"
+        />
         <label class="el-form-item-label">结束时间</label>
-        <el-input v-model="query.endTime" clearable placeholder="结束时间" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
-        <label class="el-form-item-label">创建时间</label>
-        <el-input v-model="query.createTime" clearable placeholder="创建时间" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
-        <label class="el-form-item-label">更新时间</label>
-        <el-input v-model="query.updateTime" clearable placeholder="更新时间" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
+        <!--        <el-input v-model="query.endTime" clearable placeholder="结束时间" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />-->
+        <el-date-picker
+          v-model="query.endTime"
+          type="date"
+          value-format="yyyy-MM-dd hh:mm:ss"
+          placeholder="选择一个日期"
+          :shortcuts="shortcuts"
+          size="small"
+        />
         <rrOperation :crud="crud" />
       </div>
       <!--如果想在工具栏加入更多按钮，可以使用插槽方式， slot = 'left' or 'right'-->
@@ -109,6 +121,28 @@ export default {
   data() {
     return {
       examinationPaperList: [],
+      shortcuts: [
+        {
+          text: '今天',
+          value: new Date()
+        },
+        {
+          text: '昨天',
+          value: () => {
+            const date = new Date()
+            date.setTime(date.getTime() - 3600 * 1000 * 24)
+            return date
+          }
+        },
+        {
+          text: '一周前',
+          value: () => {
+            const date = new Date()
+            date.setTime(date.getTime() - 3600 * 1000 * 24 * 7)
+            return date
+          }
+        }
+      ],
       permission: {
         add: ['admin', 'test:add'],
         edit: ['admin', 'test:edit'],
@@ -137,9 +171,7 @@ export default {
       queryTypeOptions: [
         { key: 'title', display_name: '标题' },
         { key: 'startTime', display_name: '开始时间' },
-        { key: 'endTime', display_name: '结束时间' },
-        { key: 'createTime', display_name: '创建时间' },
-        { key: 'updateTime', display_name: '更新时间' }
+        { key: 'endTime', display_name: '结束时间' }
       ]
     }
   },

@@ -5,13 +5,37 @@
       <div v-if="crud.props.searchToggle">
         <!-- 搜索 -->
         <label class="el-form-item-label">所属题目</label>
-        <el-input v-model="query.problemId" clearable placeholder="所属题目" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
+        <!--        <el-input v-model="query.problemId" clearable placeholder="所属题目" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />-->
+        <el-select v-model="query.problemId" filterable placeholder="所属题目" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery">
+          <el-option
+            v-for="item in problemList"
+            :key="item.id"
+            :label="item.title"
+            :value="item.id"
+          />
+        </el-select>
         <label class="el-form-item-label">所属用户</label>
         <el-input v-model="query.userId" clearable placeholder="所属用户" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
         <label class="el-form-item-label">所属语言</label>
-        <el-input v-model="query.languageId" clearable placeholder="所属语言" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
+        <!--        <el-input v-model="query.languageId" clearable placeholder="所属语言" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />-->
+        <el-select v-model="query.languageId" filterable placeholder="所属语言" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery">
+          <el-option
+            v-for="item in languageList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          />
+        </el-select>
         <label class="el-form-item-label">执行结果</label>
-        <el-input v-model="query.executeResultId" clearable placeholder="执行结果" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
+        <!--        <el-input v-model="query.executeResultId" clearable placeholder="执行结果" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />-->
+        <el-select v-model="query.executeResultId" filterable placeholder="执行结果" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery">
+          <el-option
+            v-for="item in executeResultList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          />
+        </el-select>
         <rrOperation :crud="crud" />
       </div>
       <!--如果想在工具栏加入更多按钮，可以使用插槽方式， slot = 'left' or 'right'-->
@@ -97,6 +121,9 @@ import rrOperation from '@crud/RR.operation'
 import crudOperation from '@crud/CRUD.operation'
 import udOperation from '@crud/UD.operation'
 import pagination from '@crud/Pagination'
+import { listAllProblem } from '@/api/problem'
+import { listAllExecuteResult } from '@/api/executeResult'
+import { listAllLanguage } from '@/api/language'
 
 const defaultForm = { id: null, problem: { id: null, title: null }, userId: null, code: null, executeTime: null, language: { id: null, name: null }, log: null, error: null, passNum: null, notPassNum: null, executeResult: { id: null, name: null }, note: null, createTime: null, updateTime: null }
 export default {
@@ -108,6 +135,9 @@ export default {
   },
   data() {
     return {
+      languageList: [],
+      problemList: [],
+      executeResultList: [],
       permission: {
         add: ['admin', 'answerRecord:add'],
         edit: ['admin', 'answerRecord:edit'],
@@ -156,10 +186,30 @@ export default {
       ]
     }
   },
+  created() {
+    this.getLanguageList()
+    this.setProblemList()
+    this.getExecuteResultList()
+  },
   methods: {
     // 钩子：在获取表格数据之前执行，false 则代表不获取数据
     [CRUD.HOOK.beforeRefresh]() {
       return true
+    },
+    setProblemList() {
+      listAllProblem().then(data => {
+        this.problemList = data
+      })
+    },
+    getLanguageList() {
+      listAllLanguage().then(data => {
+        this.languageList = data
+      })
+    },
+    getExecuteResultList() {
+      listAllExecuteResult().then(data => {
+        this.executeResultList = data
+      })
     }
   }
 }

@@ -9,9 +9,21 @@
         <label class="el-form-item-label">名称</label>
         <el-input v-model="query.name" clearable placeholder="名称" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
         <label class="el-form-item-label">是否启动</label>
-        <el-input v-model="query.enabled" clearable placeholder="是否启动" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
+        <!--        <el-input v-model="query.enabled" clearable placeholder="是否启动" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />-->
+        <el-select v-model="query.enabled" clearable placeholder="是否启动" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery">
+          <el-option key="是" :value="true" label="是" />
+          <el-option key="否" :value="false" label="否" />
+        </el-select>
         <label class="el-form-item-label">语言id</label>
-        <el-input v-model="query.languageId" clearable placeholder="语言id" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
+        <!--        <el-input v-model="query.languageId" clearable placeholder="语言id" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />-->
+        <el-select v-model="query.languageId" filterable placeholder="所属语言" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery">
+          <el-option
+            v-for="item in languageList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          />
+        </el-select>
         <rrOperation :crud="crud" />
       </div>
       <!--如果想在工具栏加入更多按钮，可以使用插槽方式， slot = 'left' or 'right'-->
@@ -71,6 +83,7 @@ import rrOperation from '@crud/RR.operation'
 import crudOperation from '@crud/CRUD.operation'
 import udOperation from '@crud/UD.operation'
 import pagination from '@crud/Pagination'
+import { listAllLanguage } from '@/api/language'
 
 const defaultForm = { id: null, name: null, username: null, password: null, url: null, enabled: 1, createTime: null, updateTime: null, supportLanguage: null }
 export default {
@@ -83,6 +96,9 @@ export default {
   },
   data() {
     return {
+      languageList: [],
+      problemList: [],
+      executeResultList: [],
       permission: {
         add: ['admin', 'judgeMachine:add'],
         edit: ['admin', 'judgeMachine:edit'],
@@ -113,6 +129,9 @@ export default {
       ]
     }
   },
+  created() {
+    this.getLanguageList()
+  },
   methods: {
     // 钩子：在获取表格数据之前执行，false 则代表不获取数据
     [CRUD.HOOK.beforeRefresh]() {
@@ -132,6 +151,11 @@ export default {
         })
       }).catch(() => {
         data.enabled = !data.enabled
+      })
+    },
+    getLanguageList() {
+      listAllLanguage().then(data => {
+        this.languageList = data
       })
     }
   }

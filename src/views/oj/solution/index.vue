@@ -7,7 +7,15 @@
         <label class="el-form-item-label">标题</label>
         <el-input v-model="query.title" clearable placeholder="标题" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
         <label class="el-form-item-label">所属题目</label>
-        <el-input v-model="query.problemId" clearable placeholder="所属题目" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
+        <!--        <el-input v-model="query.problemId" clearable placeholder="" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />-->
+        <el-select v-model="query.problemId" filterable placeholder="所属题目" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery">
+          <el-option
+            v-for="item in problemList"
+            :key="item.id"
+            :label="item.title"
+            :value="item.id"
+          />
+        </el-select>
         <rrOperation :crud="crud" />
       </div>
       <!--如果想在工具栏加入更多按钮，可以使用插槽方式， slot = 'left' or 'right'-->

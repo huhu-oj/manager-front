@@ -24,4 +24,11 @@ export function edit(data) {
   })
 }
 
+export function listAllLanguage() {
+  return request({
+    url: 'api/language/all',
+    method: 'get'
+  })
+}
+
 export default { add, edit, del }

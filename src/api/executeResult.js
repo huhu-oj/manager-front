@@ -24,4 +24,10 @@ export function edit(data) {
   })
 }
 
+export function listAllExecuteResult() {
+  return request({
+    url: 'api/executeResult/all',
+    method: 'get'
+  })
+}
 export default { add, edit, del }
