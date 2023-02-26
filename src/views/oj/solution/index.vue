@@ -39,6 +39,25 @@
               />
             </el-select>
           </el-form-item>
+          <el-form-item label="标签" prop="labels">
+            <el-select
+              v-model="form.labels"
+              value-key="id"
+              multiple
+              filterable
+              allow-create
+              default-first-option
+              :reserve-keyword="false"
+              placeholder="关联标签"
+            >
+              <el-option
+                v-for="item in labelList"
+                :key="item.id"
+                :label="item.name"
+                :value="item"
+              />
+            </el-select>
+          </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button type="text" @click="crud.cancelCU">取消</el-button>
@@ -80,8 +99,9 @@ import pagination from '@crud/Pagination'
 
 import 'mavon-editor/dist/css/index.css'
 import { mavonEditor } from 'mavon-editor'
+import { listAllLabel } from '@/api/label'
 
-const defaultForm = { id: null, title: null, description: null, problem: { id: null, title: null }, createTime: null, updateTime: null, descriptionHtml: '' }
+const defaultForm = { id: null, title: null, description: null, problem: { id: null, title: null }, createTime: null, updateTime: null, descriptionHtml: '', labels: [] }
 export default {
   name: 'Solution',
   components: { mavonEditor, pagination, crudOperation, rrOperation, udOperation },
@@ -92,6 +112,7 @@ export default {
   data() {
     return {
       problemList: [],
+      labelList: [],
       permission: {
         add: ['admin', 'solution:add'],
         edit: ['admin', 'solution:edit'],
@@ -115,6 +136,7 @@ export default {
     }
   },
   created() {
+    this.getLabelList()
     this.setProblemList()
   },
   methods: {
@@ -130,6 +152,11 @@ export default {
     setProblemList() {
       listAllProblem().then(data => {
         this.problemList = data
+      })
+    },
+    getLabelList() {
+      listAllLabel().then(data => {
+        this.labelList = data
       })
     }
   }

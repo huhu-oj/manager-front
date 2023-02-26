@@ -14,9 +14,11 @@
       <crudOperation :permission="permission" />
       <!--表单组件-->
       <el-dialog :close-on-click-modal="false" :before-close="crud.cancelCU" :visible.sync="crud.status.cu > 0" :title="crud.status.title" width="80%">
-        <el-steps :active="title_active" align-center>
-          <el-step title="1" description="试卷基本信息" />
-          <el-step title="2" description="试卷组成" />
+        <el-steps :active="step" finish-status="success" simple style="margin-bottom: 20px">
+          <el-step title="基本信息" />
+          <el-step title="设置题目和分值" />
+          <el-step title="题解" />
+          <el-step title="输入输出" />
         </el-steps>
         <div v-if="title_active===1">
           <el-form ref="form" :model="form" :rules="rules" size="small" label-width="80px">
@@ -68,7 +70,7 @@
 
 <script>
 import crudExaminationPaper from '@/api/examinationPaper'
-import CRUD, { presenter, header, form, crud } from '@crud/crud'
+import CRUD, { crud, form, header, presenter } from '@crud/crud'
 import rrOperation from '@crud/RR.operation.vue'
 import crudOperation from '@crud/CRUD.operation.vue'
 import udOperation from '@crud/UD.operation.vue'
@@ -86,7 +88,7 @@ export default {
   },
   data() {
     return {
-      title_active: 1,
+      step: 1,
       permission: {
         add: ['admin', 'examinationPaper:add'],
         edit: ['admin', 'examinationPaper:edit'],
