@@ -39,7 +39,7 @@
           <el-form-item label="备注" prop="description">
             <el-input v-model="form.description" :rows="3" type="textarea" style="width: 370px;" />
           </el-form-item>
-          <el-form-item label="试卷" prop="examinationPaper.id">
+          <el-form-item label="试卷" prop="examinationPaperId">
             <!--/*            <el-input v-model="form.examinationPaperId" style="width: 370px;" />*/-->
             <el-select v-model="form.examinationPaper.id" filterable placeholder="Select">
               <el-option
@@ -156,7 +156,7 @@ export default {
         //   { required: true, message: '备注不能为空', trigger: 'blur' }
         // ],
         examinationPaperId: [
-          { required: true, message: '试卷id不能为空', trigger: 'blur' }
+          { required: true, message: '试卷不能为空', trigger: 'blur' }
         ],
         startTime: [
           { required: true, message: '开始时间不能为空', trigger: 'blur' }

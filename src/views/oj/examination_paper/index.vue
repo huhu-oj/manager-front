@@ -17,10 +17,8 @@
         <el-steps :active="step" finish-status="success" simple style="margin-bottom: 20px">
           <el-step title="基本信息" />
           <el-step title="设置题目和分值" />
-          <el-step title="题解" />
-          <el-step title="输入输出" />
         </el-steps>
-        <div v-if="title_active===1">
+        <div v-show="step+1 === 1">
           <el-form ref="form" :model="form" :rules="rules" size="small" label-width="80px">
             <el-form-item label="名称" prop="name">
               <el-input v-model="form.name" style="width: 370px;" />
@@ -30,19 +28,44 @@
             </el-form-item>
           </el-form>
         </div>
-        <div v-else>
-          <el-transfer
-            :value="problemIds"
-            filterable
-            filter-placeholder="题目名"
-            :data="problems"
-          />
+        <div v-show="step+1 === 2">
+          <el-table size="small" :data="form.problems">
+            <el-table-column type="index" />
+            <el-table-column prop="title" label="标题" />
+            <el-table-column prop="score" label="分数">
+              <template #default="scope">
+                <!--                <el-input-number v-model="scope.row.weight" :min="1" :max="10" />-->
+                <el-input v-model="scope.row.score" type="number" />
+              </template>
+            </el-table-column>
+            <el-table-column label="操作" width="150px" align="center">
+              <template #default="scope">
+                <el-popconfirm title="取消该题目的关联？" @confirm="cancelProblem(scope.row)">
+                  <template #reference>
+                    <el-button>删除</el-button>
+                  </template>
+                </el-popconfirm>
+              </template>
+            </el-table-column>
+          </el-table>
+          <el-popover placement="bottom" :width="200" trigger="click">
+            <template #reference>
+              <el-button>添加题目</el-button>
+            </template>
+            <el-table size="small" :data="problemList" @row-click="selectOneProblem">
+              <el-table-column prop="title" label="标题" />
+            </el-table>
+          </el-popover>
         </div>
         <div slot="footer" class="dialog-footer">
-          <el-button type="text" @click="title_active=2">下一步</el-button>
-          <el-button type="text" @click="title_active=1">上一步</el-button>
+          <el-button-group>
+            <el-button type="primary" :disabled="step === 0" @click="plusStep(false,stepCount)"><svg-icon icon-class="left" />上一步</el-button>
+            <el-button type="primary" :disabled="step+1 === stepCount" @click="plusStep(true,stepCount)">
+              下一步<svg-icon icon-class="right" />
+            </el-button>
+          </el-button-group>
           <el-button type="text" @click="crud.cancelCU">取消</el-button>
-          <el-button :loading="crud.status.cu === 2" type="primary" @click="crud.submitCU">确认</el-button>
+          <el-button v-if="step+1 === stepCount" :loading="crud.status.cu === 2" type="primary" @click="crud.submitCU">确认</el-button>
         </div>
       </el-dialog>
       <!--表格渲染-->
@@ -77,8 +100,9 @@ import udOperation from '@crud/UD.operation.vue'
 import pagination from '@crud/Pagination.vue'
 import 'mavon-editor/dist/css/index.css'
 import { mavonEditor } from 'mavon-editor'
+import { listAllProblem } from '@/api/problem'
 
-const defaultForm = { id: null, name: null, description: '', descriptionHtml: null, createTime: null, updateTime: null }
+const defaultForm = { id: null, name: null, description: '', descriptionHtml: null, createTime: null, updateTime: null, problems: [] }
 export default {
   name: 'ExaminationPaper',
   components: { mavonEditor, pagination, crudOperation, rrOperation, udOperation },
@@ -88,7 +112,9 @@ export default {
   },
   data() {
     return {
-      step: 1,
+      step: 0,
+      stepCount: 2,
+      problemList: [],
       permission: {
         add: ['admin', 'examinationPaper:add'],
         edit: ['admin', 'examinationPaper:edit'],
@@ -106,20 +132,43 @@ export default {
     }
   },
   created() {
-
+    this.getProblemList()
   },
   methods: {
     // 钩子：在获取表格数据之前执行，false 则代表不获取数据
     [CRUD.HOOK.beforeRefresh]() {
       return true
     },
+    [CRUD.HOOK.afterToCU]() {
+      // 表单应该重置到第一页
+      this.step = 0
+    },
     savePaperInfo(markdown, render) {
       this.form.description = markdown
       this.form.descriptionHtml = render
     },
-    getProblems() {
-      // crudProblem.
-
+    plusStep(bool, count) {
+      if (bool) {
+        this.step = (this.step + 1) % count
+      } else {
+        const tempStep = (this.step - 1) % count
+        tempStep < 0 ? this.step = 0 : this.step = tempStep
+      }
+    },
+    getProblemList() {
+      listAllProblem().then(data => {
+        this.problemList = data
+      })
+    },
+    selectOneProblem(row) {
+      console.log(row)
+      row.score = 10
+      this.form.problems.push(row)
+      console.log(this.form.problems)
+      this.form.problems = Array.from(new Set(this.form.problems))
+    },
+    cancelProblem(row) {
+      this.form.problems.splice(row.$index, 1)
     }
   }
 }
