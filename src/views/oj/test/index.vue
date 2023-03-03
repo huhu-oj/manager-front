@@ -39,14 +39,14 @@
           <el-form-item label="备注" prop="description">
             <el-input v-model="form.description" :rows="3" type="textarea" style="width: 370px;" />
           </el-form-item>
-          <el-form-item label="试卷" prop="examinationPaperId">
+          <el-form-item label="试卷" prop="examinationPaper">
             <!--/*            <el-input v-model="form.examinationPaperId" style="width: 370px;" />*/-->
-            <el-select v-model="form.examinationPaper.id" filterable placeholder="Select">
+            <el-select v-model="form.examinationPaper" value-key="id" filterable placeholder="Select">
               <el-option
                 v-for="item in examinationPaperList"
                 :key="item.id"
                 :label="item.name"
-                :value="item.id"
+                :value="item"
               />
             </el-select>
           </el-form-item>
@@ -56,8 +56,18 @@
           <el-form-item label="结束时间" prop="endTime">
             <el-date-picker v-model="form.endTime" type="datetime" style="width: 370px;" />
           </el-form-item>
-          <!--          <el-form-item label="是否启用" prop="enabled">-->
-          <!--            <el-switch v-model="form.enabled" />-->
+          <!--          <el-form-item label="关联单位" prop="depts">-->
+          <!--            <el-tree-->
+          <!--              ref="deptTree"-->
+          <!--              :data="deptDatas"-->
+          <!--              :load="getDeptDatas"-->
+          <!--              :props="defaultProps"-->
+          <!--              :expand-on-click-node="false"-->
+          <!--              v-model="form.depts"-->
+          <!--              lazy-->
+          <!--              show-checkbox-->
+          <!--              @check-change="handleDeptChange"-->
+          <!--            />-->
           <!--          </el-form-item>-->
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -108,8 +118,9 @@ import rrOperation from '@crud/RR.operation'
 import crudOperation from '@crud/CRUD.operation'
 import udOperation from '@crud/UD.operation'
 import pagination from '@crud/Pagination'
+import { getDepts } from '@/api/system/dept'
 
-const defaultForm = { id: null, title: null, description: null, examinationPaper: { id: null, name: null }, startTime: Date.now(), endTime: null, enabled: true }
+const defaultForm = { id: null, title: null, description: null, examinationPaper: null, startTime: Date.now(), endTime: null, enabled: true, depts: [] }
 export default {
   name: 'Test',
   components: { pagination, crudOperation, rrOperation, udOperation },
@@ -120,6 +131,8 @@ export default {
   },
   data() {
     return {
+      deptDatas: [],
+      defaultProps: { children: 'children', label: 'name', isLeaf: 'leaf' },
       examinationPaperList: [],
       shortcuts: [
         {
@@ -155,7 +168,7 @@ export default {
         // description: [
         //   { required: true, message: '备注不能为空', trigger: 'blur' }
         // ],
-        examinationPaperId: [
+        examinationPaper: [
           { required: true, message: '试卷不能为空', trigger: 'blur' }
         ],
         startTime: [
@@ -164,8 +177,8 @@ export default {
         endTime: [
           { required: true, message: '结束时间不能为空', trigger: 'blur' }
         ],
-        enabled: [
-          { required: true, message: '是否启用不能为空', trigger: 'blur' }
+        depts: [
+          { required: true, message: '至少关联一个单位', trigger: 'blur' }
         ]
       },
       queryTypeOptions: [
@@ -182,6 +195,29 @@ export default {
     // 钩子：在获取表格数据之前执行，false 则代表不获取数据
     [CRUD.HOOK.beforeRefresh]() {
       return true
+    },
+    getDeptDatas(node, resolve) {
+      const sort = 'id,desc'
+      const params = { sort: sort }
+      if (typeof node !== 'object') {
+        if (node) {
+          params['name'] = node
+        }
+      } else if (node.level !== 0) {
+        params['pid'] = node.data.id
+      }
+      setTimeout(() => {
+        getDepts(params).then(res => {
+          if (resolve) {
+            resolve(res.content)
+          } else {
+            this.deptDatas = res.content
+          }
+        })
+      }, 100)
+    },
+    handleDeptChange() {
+      this.form.depts = this.$refs.deptTree.getCheckedNodes()
     },
     setPaperList() {
       listAllExaminationPaper().then(data => {
