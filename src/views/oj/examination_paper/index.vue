@@ -72,8 +72,8 @@
       <el-table ref="table" v-loading="crud.loading" :data="crud.data" size="small" style="width: 100%;" @selection-change="crud.selectionChangeHandler">
         <el-table-column type="selection" width="55" />
         <el-table-column prop="id" label="id" />
-        <el-table-column prop="name" label="名称" />
-        <el-table-column prop="description" label="描述" />
+        <el-table-column prop="name" show-overflow-tooltip label="名称" />
+        <el-table-column prop="description" show-overflow-tooltip label="描述" />
         <el-table-column prop="createTime" label="createTime" />
         <el-table-column prop="updateTime" label="updateTime" />
         <el-table-column v-if="checkPer(['admin','examinationPaper:edit','examinationPaper:del'])" label="操作" width="150px" align="center">

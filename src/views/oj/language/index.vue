@@ -30,7 +30,7 @@
         <el-table-column type="selection" width="55" />
         <el-table-column prop="id" label="id" />
         <el-table-column prop="name" label="语言名称" />
-        <el-table-column prop="compileStatement" label="编译语句" />
+        <el-table-column prop="compileStatement" show-overflow-tooltip label="编译语句" />
         <el-table-column prop="createTime" label="创建时间" />
         <el-table-column prop="updateTime" label="更新时间" />
         <el-table-column v-if="checkPer(['admin','language:edit','language:del'])" label="操作" width="150px" align="center">
@@ -50,7 +50,7 @@
 
 <script>
 import crudLanguage from '@/api/language'
-import CRUD, { presenter, header, form, crud } from '@crud/crud'
+import CRUD, { crud, form, header, presenter } from '@crud/crud'
 import rrOperation from '@crud/RR.operation'
 import crudOperation from '@crud/CRUD.operation'
 import udOperation from '@crud/UD.operation'

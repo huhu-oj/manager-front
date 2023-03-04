@@ -29,8 +29,8 @@
       <el-table ref="table" v-loading="crud.loading" :data="crud.data" size="small" style="width: 100%;" @selection-change="crud.selectionChangeHandler">
         <el-table-column type="selection" width="55" />
         <el-table-column prop="id" label="id" />
-        <el-table-column prop="name" label="名称" />
-        <el-table-column prop="description" label="描述" />
+        <el-table-column prop="name" show-overflow-tooltip label="名称" />
+        <el-table-column prop="description" show-overflow-tooltip label="描述" />
         <el-table-column prop="createTime" label="创建时间" />
         <el-table-column prop="updateTime" label="更新时间" />
         <el-table-column v-if="checkPer(['admin','knowledge:edit','knowledge:del'])" label="操作" width="150px" align="center">
@@ -58,6 +58,7 @@ import pagination from '@crud/Pagination'
 
 import 'mavon-editor/dist/css/index.css'
 import { mavonEditor } from 'mavon-editor'
+
 const defaultForm = { id: null, name: null, description: null, createTime: null, updateTime: null, descriptionHtml: '' }
 export default {
   name: 'Knowledge',

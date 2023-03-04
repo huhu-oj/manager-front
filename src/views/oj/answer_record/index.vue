@@ -86,17 +86,17 @@
       <el-table ref="table" v-loading="crud.loading" :data="crud.data" size="small" style="width: 100%;" @selection-change="crud.selectionChangeHandler">
         <el-table-column type="selection" width="55" />
         <el-table-column prop="id" label="id" />
-        <el-table-column prop="problem.title" label="所属题目" />
-        <el-table-column prop="userId" label="所属用户" />
-        <el-table-column prop="code" label="代码" />
+        <el-table-column prop="problem.title" show-overflow-tooltip label="所属题目" />
+        <el-table-column prop="userId" show-overflow-tooltip label="所属用户" />
+        <el-table-column prop="code" show-overflow-tooltip label="代码" />
         <el-table-column prop="executeTime" label="执行时间" />
         <el-table-column prop="language.name" label="所属语言" />
-        <el-table-column prop="log" label="日志" />
-        <el-table-column prop="error" label="错误日志" />
+        <el-table-column prop="log" show-overflow-tooltip label="日志" />
+        <el-table-column prop="error" show-overflow-tooltip label="错误日志" />
         <el-table-column prop="passNum" label="通过数" />
         <el-table-column prop="notPassNum" label="未通过数" />
         <el-table-column prop="executeResult.name" label="执行结果" />
-        <el-table-column prop="note" label="备注" />
+        <el-table-column prop="note" show-overflow-tooltip label="备注" />
         <el-table-column prop="createTime" label="创建时间" />
         <el-table-column prop="updateTime" label="更新时间" />
         <el-table-column v-if="checkPer(['admin','answerRecord:edit','answerRecord:del'])" label="操作" width="150px" align="center">

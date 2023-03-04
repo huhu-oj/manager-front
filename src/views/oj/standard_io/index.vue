@@ -47,9 +47,9 @@
       <el-table ref="table" v-loading="crud.loading" :data="crud.data" size="small" style="width: 100%;" @selection-change="crud.selectionChangeHandler">
         <el-table-column type="selection" width="55" />
         <el-table-column prop="id" label="id" />
-        <el-table-column prop="input" label="输入" />
-        <el-table-column prop="output" label="输出" />
-        <el-table-column prop="problem.title" label="所属题目" />
+        <el-table-column prop="input" show-overflow-tooltip label="输入" />
+        <el-table-column prop="output" show-overflow-tooltip label="输出" />
+        <el-table-column prop="problem.title" show-overflow-tooltip label="所属题目" />
         <el-table-column prop="createTime" label="createTime" />
         <el-table-column prop="updateTime" label="updateTime" />
         <el-table-column v-if="checkPer(['admin','standardIo:edit','standardIo:del'])" label="操作" width="150px" align="center">

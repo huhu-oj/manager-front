@@ -79,8 +79,8 @@
       <el-table ref="table" v-loading="crud.loading" :data="crud.data" size="small" style="width: 100%;" @selection-change="crud.selectionChangeHandler">
         <el-table-column type="selection" width="55" />
         <el-table-column prop="id" label="id" />
-        <el-table-column prop="title" label="标题" />
-        <el-table-column prop="description" label="备注" />
+        <el-table-column prop="title" show-overflow-tooltip label="标题" />
+        <el-table-column prop="description" show-overflow-tooltip label="备注" />
         <el-table-column prop="startTime" label="开始时间" />
         <el-table-column prop="endTime" label="结束时间" />
         <el-table-column prop="enabled" label="是否启用">
