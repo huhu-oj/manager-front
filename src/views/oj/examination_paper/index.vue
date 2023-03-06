@@ -39,7 +39,7 @@
             </el-table-column>
             <el-table-column label="操作" width="150px" align="center">
               <template #default="scope">
-                <el-popconfirm title="取消该题目的关联？" @confirm="cancelProblem(scope.row)">
+                <el-popconfirm title="取消该题目的关联？" @confirm="cancelProblem(scope)">
                   <template #reference>
                     <el-button>删除</el-button>
                   </template>
@@ -164,12 +164,14 @@ export default {
         score: 10,
         problem: row
       }
-      row.score = 10
+      if (this.form.examinationPaperProblems.some(epp => epp.problem.id === row.id)) {
+        return
+      }
       this.form.examinationPaperProblems.push(examinationPaperProblem)
       this.form.examinationPaperProblems = Array.from(new Set(this.form.examinationPaperProblems))
     },
-    cancelProblem(row) {
-      this.form.examinationPaperProblems.splice(row.$index, 1)
+    cancelProblem(scope) {
+      this.form.examinationPaperProblems.splice(scope.$index, 1)
     }
   }
 }

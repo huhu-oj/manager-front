@@ -57,7 +57,7 @@
                 </el-table-column>
                 <el-table-column label="操作" width="150px" align="center">
                   <template #default="scope">
-                    <el-popconfirm title="取消该知识点的关联？" @confirm="cancelKnowledge(scope.row)">
+                    <el-popconfirm title="取消该知识点的关联？" @confirm="cancelKnowledge(scope)">
                       <template #reference>
                         <el-button>删除</el-button>
                       </template>
@@ -151,7 +151,7 @@
               </el-table-column>
               <el-table-column label="操作" width="150px" align="center">
                 <template #default="scope">
-                  <el-popconfirm title="删除该条输入输出？" @confirm="cancelStandardIo(scope.row)">
+                  <el-popconfirm title="删除该条输入输出？" @confirm="cancelStandardIo(scope)">
                     <template #reference>
                       <el-button>删除</el-button>
                     </template>
@@ -339,14 +339,17 @@ export default {
         weight: 1,
         knowledge: row
       }
+      if (this.form.problemKnowledges.some(pk => pk.knowledge.id === row.id)) {
+        return
+      }
       this.form.problemKnowledges.push(problemKnowledge)
       this.form.problemKnowledges = Array.from(new Set(this.form.problemKnowledges))
     },
-    cancelKnowledge(row) {
-      this.form.problemKnowledges.splice(row.$index, 1)
+    cancelKnowledge(scope) {
+      this.form.problemKnowledges.splice(scope.$index, 1)
     },
-    cancelStandardIo(row) {
-      this.form.standardIos.splice(row.$index, 1)
+    cancelStandardIo(scope) {
+      this.form.standardIos.splice(scope.$index, 1)
     },
     plusStep(bool, count) {
       if (bool) {
