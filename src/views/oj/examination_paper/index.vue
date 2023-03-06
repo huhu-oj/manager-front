@@ -29,12 +29,11 @@
           </el-form>
         </div>
         <div v-show="step+1 === 2">
-          <el-table size="small" :data="form.problems">
+          <el-table size="small" :data="form.examinationPaperProblems">
             <el-table-column type="index" />
-            <el-table-column prop="title" label="标题" />
+            <el-table-column prop="problem.title" label="标题" />
             <el-table-column prop="score" label="分数">
               <template #default="scope">
-                <!--                <el-input-number v-model="scope.row.weight" :min="1" :max="10" />-->
                 <el-input v-model="scope.row.score" type="number" />
               </template>
             </el-table-column>
@@ -102,7 +101,7 @@ import 'mavon-editor/dist/css/index.css'
 import { mavonEditor } from 'mavon-editor'
 import { listAllProblem } from '@/api/problem'
 
-const defaultForm = { id: null, name: null, description: '', descriptionHtml: null, createTime: null, updateTime: null, problems: [] }
+const defaultForm = { id: null, name: null, description: '', descriptionHtml: null, createTime: null, updateTime: null, problems: [], examinationPaperProblems: [] }
 export default {
   name: 'ExaminationPaper',
   components: { mavonEditor, pagination, crudOperation, rrOperation, udOperation },
@@ -161,14 +160,16 @@ export default {
       })
     },
     selectOneProblem(row) {
-      console.log(row)
+      const examinationPaperProblem = {
+        score: 10,
+        problem: row
+      }
       row.score = 10
-      this.form.problems.push(row)
-      console.log(this.form.problems)
-      this.form.problems = Array.from(new Set(this.form.problems))
+      this.form.examinationPaperProblems.push(examinationPaperProblem)
+      this.form.examinationPaperProblems = Array.from(new Set(this.form.examinationPaperProblems))
     },
     cancelProblem(row) {
-      this.form.problems.splice(row.$index, 1)
+      this.form.examinationPaperProblems.splice(row.$index, 1)
     }
   }
 }

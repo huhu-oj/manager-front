@@ -47,8 +47,8 @@
               </el-select>
             </el-form-item>
             <el-form-item label="知识点">
-              <el-table size="small" :data="form.knowledges">
-                <el-table-column prop="name" label="名称" />
+              <el-table size="small" :data="form.problemKnowledges">
+                <el-table-column prop="knowledge.name" label="名称" />
                 <el-table-column prop="weight" label="权重">
                   <template #default="scope">
                     <!--                <el-input-number v-model="scope.row.weight" :min="1" :max="10" />-->
@@ -229,7 +229,7 @@ import { mavonEditor } from 'mavon-editor'
 import { listAllLabel } from '@/api/label'
 import { listAllKnowledge } from '@/api/knowledge'
 
-const defaultForm = { id: null, title: null, description: '', createTime: null, updateTime: null, descriptionHtml: null, labels: [], labelIds: [], knowledges: [], hints: [], solutions: [], standardIos: [] }
+const defaultForm = { id: null, title: null, description: '', createTime: null, updateTime: null, descriptionHtml: null, labels: [], labelIds: [], knowledges: [], problemKnowledges: [], hints: [], solutions: [], standardIos: [] }
 export default {
   name: 'Problem',
   components: { mavonEditor, pagination, crudOperation, rrOperation, udOperation },
@@ -334,12 +334,16 @@ export default {
       })
     },
     selectOneKnowledge(row) {
-      row.weight = 1
-      this.form.knowledges.push(row)
-      this.form.knowledges = Array.from(new Set(this.form.knowledges))
+      // row.weight = 1
+      const problemKnowledge = {
+        weight: 1,
+        knowledge: row
+      }
+      this.form.problemKnowledges.push(problemKnowledge)
+      this.form.problemKnowledges = Array.from(new Set(this.form.problemKnowledges))
     },
     cancelKnowledge(row) {
-      this.form.knowledges.splice(row.$index, 1)
+      this.form.problemKnowledges.splice(row.$index, 1)
     },
     cancelStandardIo(row) {
       this.form.standardIos.splice(row.$index, 1)
