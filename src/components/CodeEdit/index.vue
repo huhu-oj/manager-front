@@ -1,18 +1,5 @@
 <template>
   <div class="json-editor">
-    <el-select
-      v-model="languageId"
-      default-first-option
-      :reserve-keyword="false"
-      placeholder="选择语言"
-    >
-      <el-option
-        v-for="item in knowledgeList"
-        :key="item.id"
-        :label="item.name"
-        :value="item.id"
-      />
-    </el-select>
     <textarea ref="textarea" />
   </div>
 </template>
@@ -20,7 +7,6 @@
 <script>
 import CodeMirror from 'codemirror'
 import './settings'
-import { listAllKnowledge } from '@/api/knowledge'
 
 export default {
   props: {
@@ -35,17 +21,26 @@ export default {
     language: {
       type: String,
       default: 'java',
-      require: true
-    },
-    languageId: {
-      type: Number,
-      default: 1
+      require: false
     }
   },
   data() {
     return {
       editor: false,
-      knowledgeList: []
+      languageMap: {
+        JavaScript: 'javascript',
+        TypeScript: 'text/typescript',
+        Python: 'python',
+        Java: 'text/x-java',
+        CPP: 'text/x-c++src',
+        CSharp: 'text/x-csharp',
+        Go: 'text/x-go',
+        PHP: 'php',
+        HTML: 'htmlmixed',
+        CSS: 'css',
+        SQL: 'text/x-sql',
+        Markdown: 'markdown'
+      }
     }
   },
   watch: {
@@ -57,6 +52,19 @@ export default {
     },
     height(value) {
       this.editor.setSize('auto', this.height)
+    },
+    language() {
+      let languageKey = 'java'
+      for (const key in this.languageMap) {
+        if (this.languageMap.hasOwnProperty(key)) {
+          if (key.toLowerCase() === this.language.toLowerCase()) {
+            languageKey = key
+            break
+          }
+        }
+      }
+      console.log(this.languageMap[languageKey])
+      this.editor.setOption('mode', this.languageMap[languageKey])
     }
   },
   mounted() {
@@ -81,17 +89,9 @@ export default {
       this.$emit('input', cm.getValue())
     })
   },
-  created() {
-    this.getKnowledgeList()
-  },
   methods: {
     getValue() {
       return this.editor.getValue()
-    },
-    getKnowledgeList() {
-      listAllKnowledge().then(data => {
-        this.knowledgeList = data
-      })
     }
   }
 }
@@ -103,8 +103,7 @@ export default {
     margin-bottom: 10px;
   }
   .json-editor >>> .CodeMirror {
-    font-size: 13px;
-    overflow-y:auto;
+    font-size: 14px;
     font-weight:normal
   }
   .json-editor >>> .CodeMirror-scroll{

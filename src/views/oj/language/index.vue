@@ -11,13 +11,19 @@
       <!--如果想在工具栏加入更多按钮，可以使用插槽方式， slot = 'left' or 'right'-->
       <crudOperation :permission="permission" />
       <!--表单组件-->
-      <el-dialog :close-on-click-modal="false" :before-close="crud.cancelCU" :visible.sync="crud.status.cu > 0" :title="crud.status.title" width="500px">
+      <el-dialog :close-on-click-modal="false" :before-close="crud.cancelCU" :visible.sync="crud.status.cu > 0" :title="crud.status.title" width="80%">
         <el-form ref="form" :model="form" :rules="rules" size="small" label-width="80px">
           <el-form-item label="语言名称" prop="name">
             <el-input v-model="form.name" style="width: 370px;" />
           </el-form-item>
           <el-form-item label="编译语句" prop="compileStatement">
-            <el-input v-model="form.compileStatement" :rows="3" type="textarea" style="width: 370px;" />
+            <!--            <el-input v-model="form.compileStatement" :rows="3" type="textarea" style="width: 370px;" />-->
+            <java-edit
+              :height="height"
+              :value="form.compileStatement"
+              :language="form.name"
+              @changed="value=>this.form.compileStatement = value"
+            />
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -55,17 +61,19 @@ import rrOperation from '@crud/RR.operation'
 import crudOperation from '@crud/CRUD.operation'
 import udOperation from '@crud/UD.operation'
 import pagination from '@crud/Pagination'
-
-const defaultForm = { id: null, name: null, compileStatement: null, createTime: null, updateTime: null }
+import javaEdit from '@/components/CodeEdit'
+const defaultForm = { id: null, name: '', compileStatement: '', createTime: null, updateTime: null }
 export default {
   name: 'Language',
-  components: { pagination, crudOperation, rrOperation, udOperation },
+  components: { pagination, crudOperation, rrOperation, udOperation, javaEdit },
   mixins: [presenter(), header(), form(defaultForm), crud()],
   cruds() {
     return CRUD({ title: '编程语言', url: 'api/language', idField: 'id', sort: 'id,desc', crudMethod: { ...crudLanguage }})
   },
   data() {
     return {
+      height: document.documentElement.clientHeight - 380 + 'px',
+
       permission: {
         add: ['admin', 'language:add'],
         edit: ['admin', 'language:edit'],
