@@ -35,7 +35,7 @@ export default {
         CPP: 'text/x-c++src',
         CSharp: 'text/x-csharp',
         Go: 'text/x-go',
-        PHP: 'php',
+        PHP: 'application/x-httpd-php',
         HTML: 'htmlmixed',
         CSS: 'css',
         SQL: 'text/x-sql',
@@ -54,22 +54,13 @@ export default {
       this.editor.setSize('auto', this.height)
     },
     language() {
-      let languageKey = 'java'
-      for (const key in this.languageMap) {
-        if (this.languageMap.hasOwnProperty(key)) {
-          if (key.toLowerCase() === this.language.toLowerCase()) {
-            languageKey = key
-            break
-          }
-        }
-      }
-      console.log(this.languageMap[languageKey])
+      const languageKey = this.lookLanguageMode()
       this.editor.setOption('mode', this.languageMap[languageKey])
     }
   },
   mounted() {
     this.editor = CodeMirror.fromTextArea(this.$refs.textarea, {
-      mode: `text/x-${this.language}`,
+      mode: this.lookLanguageMode(),
       lineNumbers: true,
       lint: true,
       lineWrapping: true,
@@ -92,6 +83,17 @@ export default {
   methods: {
     getValue() {
       return this.editor.getValue()
+    },
+    lookLanguageMode() {
+      for (const key in this.languageMap) {
+        if (!this.languageMap.hasOwnProperty(key)) {
+          continue
+        }
+        if (key.toLowerCase() === this.language.toLowerCase()) {
+          return key
+        }
+      }
+      return 'text/x-java'
     }
   }
 }

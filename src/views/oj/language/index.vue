@@ -18,11 +18,11 @@
           </el-form-item>
           <el-form-item label="编译语句" prop="compileStatement">
             <!--            <el-input v-model="form.compileStatement" :rows="3" type="textarea" style="width: 370px;" />-->
-            <java-edit
+            <code-edit
               :height="height"
               :value="form.compileStatement"
               :language="form.name"
-              @changed="value=>this.form.compileStatement = value"
+              @changed="value => form.compileStatement = value"
             />
           </el-form-item>
         </el-form>
@@ -61,11 +61,11 @@ import rrOperation from '@crud/RR.operation'
 import crudOperation from '@crud/CRUD.operation'
 import udOperation from '@crud/UD.operation'
 import pagination from '@crud/Pagination'
-import javaEdit from '@/components/CodeEdit'
+import codeEdit from '@/components/CodeEdit'
 const defaultForm = { id: null, name: '', compileStatement: '', createTime: null, updateTime: null }
 export default {
   name: 'Language',
-  components: { pagination, crudOperation, rrOperation, udOperation, javaEdit },
+  components: { pagination, crudOperation, rrOperation, udOperation, codeEdit },
   mixins: [presenter(), header(), form(defaultForm), crud()],
   cruds() {
     return CRUD({ title: '编程语言', url: 'api/language', idField: 'id', sort: 'id,desc', crudMethod: { ...crudLanguage }})
