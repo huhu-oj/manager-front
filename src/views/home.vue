@@ -1,41 +1,42 @@
 <template>
   <div class="dashboard-container">
-    <div class="dashboard-editor-container">
-      <github-corner class="github-corner" />
+    <h1>欢迎进入HUHUOJ后台管理系统</h1>
+    <!--    <div class="dashboard-editor-container">-->
+    <!--      <github-corner class="github-corner" />-->
 
-      <panel-group @handleSetLineChartData="handleSetLineChartData" />
+    <!--      <panel-group @handleSetLineChartData="handleSetLineChartData" />-->
 
-      <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:32px;">
-        <line-chart :chart-data="lineChartData" />
-      </el-row>
-      <el-row :gutter="32">
-        <el-col :xs="24" :sm="24" :lg="8">
-          <div class="chart-wrapper">
-            <radar-chart />
-          </div>
-        </el-col>
-        <el-col :xs="24" :sm="24" :lg="8">
-          <div class="chart-wrapper">
-            <pie-chart />
-          </div>
-        </el-col>
-        <el-col :xs="24" :sm="24" :lg="8">
-          <div class="chart-wrapper">
-            <bar-chart />
-          </div>
-        </el-col>
-      </el-row>
-    </div>
+    <!--      <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:32px;">-->
+    <!--        <line-chart :chart-data="lineChartData" />-->
+    <!--      </el-row>-->
+    <!--      <el-row :gutter="32">-->
+    <!--        <el-col :xs="24" :sm="24" :lg="8">-->
+    <!--          <div class="chart-wrapper">-->
+    <!--            <radar-chart />-->
+    <!--          </div>-->
+    <!--        </el-col>-->
+    <!--        <el-col :xs="24" :sm="24" :lg="8">-->
+    <!--          <div class="chart-wrapper">-->
+    <!--            <pie-chart />-->
+    <!--          </div>-->
+    <!--        </el-col>-->
+    <!--        <el-col :xs="24" :sm="24" :lg="8">-->
+    <!--          <div class="chart-wrapper">-->
+    <!--            <bar-chart />-->
+    <!--          </div>-->
+    <!--        </el-col>-->
+    <!--      </el-row>-->
+    <!--    </div>-->
   </div>
 </template>
 
 <script>
-import GithubCorner from '@/components/GithubCorner'
-import PanelGroup from './dashboard/PanelGroup'
-import LineChart from './dashboard/LineChart'
-import RadarChart from '@/components/Echarts/RadarChart'
-import PieChart from '@/components/Echarts/PieChart'
-import BarChart from '@/components/Echarts/BarChart'
+// import GithubCorner from '@/components/GithubCorner'
+// import PanelGroup from './dashboard/PanelGroup'
+// import LineChart from './dashboard/LineChart'
+// import RadarChart from '@/components/Echarts/RadarChart'
+// import PieChart from '@/components/Echarts/PieChart'
+// import BarChart from '@/components/Echarts/BarChart'
 
 const lineChartData = {
   newVisitis: {
@@ -59,12 +60,12 @@ const lineChartData = {
 export default {
   name: 'Dashboard',
   components: {
-    GithubCorner,
-    PanelGroup,
-    LineChart,
-    RadarChart,
-    PieChart,
-    BarChart
+    // GithubCorner,
+    // PanelGroup,
+    // LineChart,
+    // RadarChart,
+    // PieChart,
+    // BarChart
   },
   data() {
     return {

@@ -15,6 +15,7 @@
 
 <script>
 import Logo from '@/assets/images/logo.png'
+
 export default {
   name: 'SidebarLogo',
   props: {
@@ -25,7 +26,7 @@ export default {
   },
   data() {
     return {
-      title: 'ELADMIN-后台管理',
+      title: 'HUHUOJ-后台管理',
       logo: Logo
     }
   }

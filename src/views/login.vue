@@ -2,7 +2,7 @@
   <div class="login" :style="'background-image:url('+ Background +');'">
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" label-position="left" label-width="0px" class="login-form">
       <h3 class="title">
-        ELADMIN 后台管理系统
+        HUHUOJ 后台管理系统
       </h3>
       <el-form-item prop="username">
         <el-input v-model="loginForm.username" type="text" auto-complete="off" placeholder="账号">
@@ -48,6 +48,7 @@ import { getCodeImg } from '@/api/login'
 import Cookies from 'js-cookie'
 import qs from 'qs'
 import Background from '@/assets/images/background.webp'
+
 export default {
   name: 'Login',
   data() {
